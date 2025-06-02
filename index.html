@@ -2,166 +2,184 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kala Deepika Dance Academy</title>
   <style>
       body {
+          font-family: Arial, sans-serif;
           margin: 0;
-          font-family: "Segoe UI", Roboto, sans-serif;
-          background-color: #fdfdfd;
+          background-color: #fdf6f0;
       }
-
       header {
-          background-color: #880e4f;
-          padding: 1rem;
+          background-color: #8e44ad;
           color: white;
+          padding: 1em;
           text-align: center;
       }
-
       nav {
           display: flex;
-          flex-wrap: wrap;
           justify-content: center;
-          background-color: #fce4ec;
+          background-color: #f2eaf4;
+          padding: 0.5em;
+          flex-wrap: wrap;
       }
-
-      nav > div {
-          position: relative;
-      }
-
-      nav a {
-          text-decoration: none;
-          color: #880e4f;
-          padding: 0.75rem 1rem;
-          font-weight: 600;
-          display: block;
-          text-align: center;
-          min-width: 100px;
-      }
-
-      nav a:hover {
-          background-color: #f8bbd0;
-      }
-
-      .dropdown {
-          display: none;
-          position: absolute;
-          background-color: #fff;
-          min-width: 160px;
-          top: 100%;
-          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-          z-index: 1;
-      }
-
-      .dropdown a {
-          color: #880e4f;
-          padding: 10px 14px;
-          text-align: left;
-      }
-
-      nav > div:hover .dropdown {
-          display: block;
-      }
-
-      .content {
-          padding: 2rem;
-          text-align: center;
-      }
-
-      .hidden {
-          display: none;
-      }
-
-      .btn {
-          background-color: #880e4f;
+      nav button {
+          margin: 0.5em;
+          padding: 0.6em 1.2em;
+          background-color: #8e44ad;
           color: white;
-          padding: 0.75rem 1.5rem;
           border: none;
-          font-size: 16px;
-          border-radius: 5px;
+          border-radius: 8px;
           cursor: pointer;
-          margin-top: 1rem;
       }
-
-      .btn:hover {
-          background-color: #a91c63;
+      nav button:hover {
+          background-color: #732d91;
       }
-
-      @media (max-width: 600px) {
-          nav {
-              flex-direction: column;
-              align-items: stretch;
-          }
-
-          .dropdown {
-              position: static;
-              box-shadow: none;
-          }
-
-          nav > div:hover .dropdown {
-              display: none;
-          }
-
-          nav > div.active .dropdown {
-              display: block;
-          }
-
-          nav a.toggle-dropdown::after {
-              content: '▼';
-              float: right;
-          }
+      section {
+          display: none;
+          padding: 2em;
+      }
+      #login-form input {
+          display: block;
+          margin: 1em 0;
+          padding: 0.5em;
+          width: 100%;
+          max-width: 300px;
+      }
+      #login-form button {
+          background-color: #8e44ad;
+          color: white;
+          border: none;
+          padding: 0.6em 1.2em;
+          border-radius: 8px;
+          cursor: pointer;
+      }
+      #login-form button:hover {
+          background-color: #732d91;
+      }
+      .visible {
+          display: block;
       }
   </style>
 </head>
 <body>
+
 <header>
   <h1>Kala Deepika Dance Academy</h1>
 </header>
 
-<nav id="main-nav">
-  <a href="#" onclick="showSection('home')">Home</a>
-  <div>
-    <a href="#" class="toggle-dropdown" onclick="toggleDropdown(event)">Students</a>
-    <div class="dropdown">
-      <a href="#" onclick="showSection('new-student')">New Student</a>
-      <a href="#" onclick="showSection('existing-student')">Existing Students</a>
-    </div>
-  </div>
-  <a href="#">Fee</a>
-  <a href="#">Progress</a>
-  <a href="#">Communications</a>
+<nav>
+  <button onclick="showSection('home')">Home</button>
+  <button onclick="showSection('students')">Students</button>
+  <button onclick="showSection('fee')">Fee</button>
+  <button onclick="showSection('progress')">Progress</button>
+  <button onclick="showSection('communications')">Communications</button>
 </nav>
 
-<div class="content" id="home">
-  <p>Welcome to the official web app for Kala Deepika Dance Academy!</p>
-</div>
+<section id="home" class="visible">
+  <h2>Welcome!</h2>
+  <p>Explore classical Kuchipudi dance lessons for all ages.</p>
+</section>
 
-<div class="content hidden" id="new-student">
-  <h2>Welcome to Kala Deepika Dance Academy!</h2>
-  <p>Kuchipudi Dance lessons for both adults and Kids (5+ years)</p>
-  <a href="https://docs.google.com/forms/d/e/1FAIpQLSc73VlKb8-UGywATqaXgtNd_dwdJ4ukGZa8hRnM_vG91NcYnA/viewform" target="_blank">
-    <button class="btn">Enroll Here</button>
-  </a>
-</div>
+<section id="students">
+  <h2>Students</h2>
+  <button onclick="showStudentOption('new')">New Student</button>
+  <button onclick="showStudentOption('existing')">Existing Student</button>
 
-<div class="content hidden" id="existing-student">
-  <h2>Existing Students</h2>
-  <p>Feature coming soon!</p>
-</div>
+  <div id="new-student" style="display:none;">
+    <h3>Welcome to Kala Deepika Dance Academy!</h3>
+    <p>Kuchipudi Dance lessons for both adults and Kids (5+ years)</p>
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSc73VlKb8-UGywATqaXgtNd_dwdJ4ukGZa8hRnM_vG91NcYnA/viewform" target="_blank">
+      <button>Enroll Here</button>
+    </a>
+  </div>
 
-<script>
-  function showSection(id) {
-    document.querySelectorAll('.content').forEach(section => {
-      section.classList.add('hidden');
-    });
-    document.getElementById(id).classList.remove('hidden');
-  }
+  <div id="existing-student" style="display:none;">
+    <h3>Existing Student Login</h3>
+    <form id="login-form">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <p id="login-message" style="color: red;"></p>
+  </div>
 
-  function toggleDropdown(e) {
+  <div id="student-dashboard" style="display:none;">
+    <h3>Welcome, student!</h3>
+    <p>This is your dashboard.</p>
+    <button onclick="firebase.auth().signOut()">Logout</button>
+  </div>
+</section>
+
+<section id="fee">
+  <h2>Fee Section</h2>
+  <p>Coming soon...</p>
+</section>
+
+<section id="progress">
+  <h2>Progress Section</h2>
+  <p>Coming soon...</p>
+</section>
+
+<section id="communications">
+  <h2>Communications</h2>
+  <p>Coming soon...</p>
+</section>
+
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-auth.js"></script>
+
+<script type="module">
+  // Replace these with your actual Firebase config
+  const firebaseConfig = {
+    apiKey: "AIzaSyAD8RgBbelFsLkn1yeFTK-wKmTEOZcxzQU",
+    authDomain: "kala-deepika.firebaseapp.com",
+    projectId: "kala-deepika",
+    storageBucket: "kala-deepika.firebasestorage.app",
+    messagingSenderId: "121888927504",
+    appId: "1:121888927504:web:8c11dbf7e6bdab66c97f95"
+  };
+
+  // Initialize Firebase
+  const app = firebase.initializeApp(firebaseConfig);
+  const auth = firebase.auth();
+
+  // UI Logic
+  window.showSection = function(id) {
+    document.querySelectorAll("section").forEach(sec => sec.classList.remove("visible"));
+    document.getElementById(id).classList.add("visible");
+  };
+
+  window.showStudentOption = function(option) {
+    document.getElementById('new-student').style.display = (option === 'new') ? 'block' : 'none';
+    document.getElementById('existing-student').style.display = (option === 'existing') ? 'block' : 'none';
+    document.getElementById('student-dashboard').style.display = 'none';
+  };
+
+  // Auth handling
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const parent = e.target.parentElement;
-    parent.classList.toggle('active');
-  }
+    const email = document.getElementById('email').value;
+    const pass = document.getElementById('password').value;
+
+    try {
+      await auth.signInWithEmailAndPassword(email, pass);
+      document.getElementById('login-message').textContent = '';
+    } catch (err) {
+      document.getElementById('login-message').textContent = 'Login failed. Please check credentials.';
+    }
+  });
+
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      document.getElementById('student-dashboard').style.display = 'block';
+      document.getElementById('existing-student').style.display = 'none';
+    } else {
+      document.getElementById('student-dashboard').style.display = 'none';
+    }
+  });
 </script>
+
 </body>
 </html>
