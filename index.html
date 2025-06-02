@@ -13,33 +13,96 @@
 
       header {
           background-color: #880e4f;
-          padding: 1em;
+          padding: 1rem;
           color: white;
           text-align: center;
       }
 
       nav {
           display: flex;
+          flex-wrap: wrap;
           justify-content: center;
           background-color: #fce4ec;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          position: relative;
+      }
+
+      nav > div {
+          position: relative;
       }
 
       nav a {
           text-decoration: none;
           color: #880e4f;
-          padding: 1em;
+          padding: 0.75rem 1rem;
+          font-weight: 600;
           display: block;
-          font-weight: bold;
+          text-align: center;
+          min-width: 100px;
       }
 
       nav a:hover {
           background-color: #f8bbd0;
       }
 
+      .dropdown {
+          display: none;
+          position: absolute;
+          background-color: #fff;
+          min-width: 160px;
+          top: 100%;
+          box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+          z-index: 1;
+      }
+
+      .dropdown a {
+          color: #880e4f;
+          padding: 10px 14px;
+          text-align: left;
+      }
+
+      nav > div:hover .dropdown {
+          display: block;
+      }
+
       .content {
-          padding: 2em;
+          padding: 1.5rem;
           text-align: center;
+      }
+
+      @media (max-width: 600px) {
+          nav {
+              flex-direction: column;
+              align-items: stretch;
+          }
+
+          nav > div {
+              width: 100%;
+          }
+
+          .dropdown {
+              position: static;
+              box-shadow: none;
+          }
+
+          nav > div:hover .dropdown {
+              display: none;
+          }
+
+          nav > div.active .dropdown {
+              display: block;
+          }
+
+          nav a.toggle-dropdown {
+              position: relative;
+              background-color: #fce4ec;
+              border-top: 1px solid #e0e0e0;
+          }
+
+          nav a.toggle-dropdown::after {
+              content: '▼';
+              position: absolute;
+              right: 1rem;
+          }
       }
   </style>
 </head>
@@ -48,9 +111,15 @@
   <h1>Kala Deepika Dance Academy</h1>
 </header>
 
-<nav>
+<nav id="main-nav">
   <a href="#">Home</a>
-  <a href="#">Students</a>
+  <div>
+    <a href="#" class="toggle-dropdown">Students</a>
+    <div class="dropdown">
+      <a href="https://docs.google.com/forms/d/1NIkdapshL1aWwwqGsOBe8dT74IBHT-RJkqERRsYGKuU/viewform" target="_blank">New Student</a>
+      <a href="#">Existing Students</a>
+    </div>
+  </div>
   <a href="#">Fee</a>
   <a href="#">Progress</a>
   <a href="#">Communications</a>
@@ -59,5 +128,16 @@
 <div class="content">
   <p>Welcome to the official web app for Kala Deepika Dance Academy!</p>
 </div>
+
+<script>
+  // Enable dropdown toggle on mobile
+  document.querySelectorAll('.toggle-dropdown').forEach(btn => {
+    btn.addEventListener('click', function (e) {
+      e.preventDefault();
+      const parent = this.parentElement;
+      parent.classList.toggle('active');
+    });
+  });
+</script>
 </body>
 </html>
