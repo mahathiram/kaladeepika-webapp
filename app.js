@@ -28,13 +28,13 @@ function showStudentOption(option) {
   document.getElementById('edit-profile').style.display = 'none';
 }
 
+function logout() {
+  auth.signOut();
+}
+
 function showEditProfile() {
   document.getElementById('edit-profile').style.display = 'block';
   document.getElementById('save-message').textContent = '';
-}
-
-function logout() {
-  auth.signOut();
 }
 
 // Auth logic
@@ -78,6 +78,21 @@ document.getElementById('profile-form').addEventListener('submit', async (e) => 
       document.getElementById('save-message').textContent = 'Profile saved successfully!';
     } catch (err) {
       document.getElementById('save-message').textContent = 'Failed to save profile.';
+    }
+  }
+});
+
+// Setup dropdown
+const studentDropdown = document.querySelector(".dropdown-content");
+document.querySelector(".dropbtn").addEventListener("click", (e) => {
+  e.stopPropagation();
+  studentDropdown.classList.toggle("show");
+});
+window.addEventListener("click", () => {
+  const dropdowns = document.getElementsByClassName("dropdown-content");
+  for (let i = 0; i < dropdowns.length; i++) {
+    if (dropdowns[i].classList.contains('show')) {
+      dropdowns[i].classList.remove('show');
     }
   }
 });
