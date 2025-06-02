@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kala Deepika Dance Academy</title>
   <style>
       body {
@@ -24,7 +24,7 @@
           flex-wrap: wrap;
           position: relative;
       }
-      nav button, nav .dropbtn {
+      nav button {
           margin: 0.5em;
           padding: 0.6em 1.2em;
           background-color: #8e44ad;
@@ -32,52 +32,53 @@
           border: none;
           border-radius: 8px;
           cursor: pointer;
-          font-size: 1em;
           position: relative;
       }
-      nav button:hover, nav .dropbtn:hover {
+      nav button:hover {
           background-color: #732d91;
       }
-      /* Dropdown container */
+      /* Dropdown container for Students */
       .dropdown {
           position: relative;
           display: inline-block;
       }
-      /* Dropdown content (hidden by default) */
       .dropdown-content {
           display: none;
           position: absolute;
           background-color: #f2eaf4;
           min-width: 160px;
           box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-          border-radius: 8px;
+          border-radius: 6px;
           z-index: 1;
-          top: 100%;
+          top: 40px;
           left: 0;
       }
-      /* Dropdown links */
       .dropdown-content button {
-          color: #8e44ad;
-          background-color: transparent;
+          background-color: #8e44ad;
+          color: white;
+          padding: 10px 16px;
           border: none;
-          padding: 12px 16px;
-          text-align: left;
+          display: block;
           width: 100%;
+          text-align: left;
           border-radius: 0;
+          margin: 0;
           cursor: pointer;
-          font-weight: normal;
       }
       .dropdown-content button:hover {
-          background-color: #d6c1e8;
-          color: #4a1a6f;
+          background-color: #732d91;
       }
-      /* Show dropdown on hover */
       .dropdown:hover .dropdown-content {
           display: block;
       }
       section {
           display: none;
           padding: 2em;
+          max-width: 800px;
+          margin: 0 auto;
+      }
+      section.visible {
+          display: block;
       }
       #login-form input {
           display: block;
@@ -85,6 +86,9 @@
           padding: 0.5em;
           width: 100%;
           max-width: 300px;
+          border-radius: 4px;
+          border: 1px solid #ccc;
+          box-sizing: border-box;
       }
       #login-form button {
           background-color: #8e44ad;
@@ -97,24 +101,22 @@
       #login-form button:hover {
           background-color: #732d91;
       }
-      .visible {
-          display: block;
-      }
-      .enroll-button {
+      a button {
           background-color: #8e44ad;
           color: white;
           border: none;
-          padding: 0.8em 1.5em;
+          padding: 0.6em 1.2em;
           border-radius: 8px;
           cursor: pointer;
-          font-size: 1.1em;
-          margin-top: 1em;
-          display: inline-block;
-          text-decoration: none;
-          text-align: center;
+          font-size: 1em;
       }
-      .enroll-button:hover {
+      a button:hover {
           background-color: #732d91;
+      }
+      #login-message {
+          color: red;
+          margin-top: 0.5em;
+          min-height: 1.5em;
       }
   </style>
 </head>
@@ -126,15 +128,13 @@
 
 <nav>
   <button onclick="showSection('home')">Home</button>
-
   <div class="dropdown">
-    <button class="dropbtn">Students ▼</button>
+    <button>Students ▼</button>
     <div class="dropdown-content">
-      <button onclick="openNewStudent()">New Students</button>
-      <button onclick="openExistingStudent()">Existing Students</button>
+      <button onclick="showSection('new-student-section')">New Students</button>
+      <button onclick="showSection('existing-student-section')">Existing Students</button>
     </div>
   </div>
-
   <button onclick="showSection('fee')">Fee</button>
   <button onclick="showSection('progress')">Progress</button>
   <button onclick="showSection('communications')">Communications</button>
@@ -145,28 +145,28 @@
   <p>Explore classical Kuchipudi dance lessons for all ages.</p>
 </section>
 
-<section id="new-student-page" style="display:none; padding: 2em;">
-  <h2>Welcome to Kala Deepika Dance Academy</h2>
-  <p>Kuchipudi dance lessons for all ages.</p>
-  <a href="https://docs.google.com/forms/d/1NIkdapshL1aWwwqGsOBe8dT74IBHT-RJkqERRsYGKuU/edit" target="_blank" rel="noopener">
-    <button class="enroll-button">Enroll Now</button>
+<section id="new-student-section">
+  <h2>Welcome to Kala Deepika Dance Academy!</h2>
+  <p>Kuchipudi dance lessons for all ages, from kids (5+) to adults.</p>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSc73VlKb8-UGywATqaXgtNd_dwdJ4ukGZa8hRnM_vG91NcYnA/viewform" target="_blank" rel="noopener noreferrer">
+    <button>Enroll Now</button>
   </a>
 </section>
 
-<section id="existing-student-page" style="display:none; padding: 2em;">
+<section id="existing-student-section">
   <h2>Existing Student Login</h2>
   <form id="login-form">
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
+    <input type="email" id="email" placeholder="Email" required autocomplete="username" />
+    <input type="password" id="password" placeholder="Password" required autocomplete="current-password" />
     <button type="submit">Login</button>
   </form>
-  <p id="login-message" style="color: red;"></p>
+  <p id="login-message"></p>
+</section>
 
-  <div id="student-dashboard" style="display:none; margin-top: 2em;">
-    <h3>Welcome, student!</h3>
-    <p>This is your dashboard.</p>
-    <button onclick="logout()">Logout</button>
-  </div>
+<section id="student-dashboard">
+  <h2>Student Dashboard</h2>
+  <p>Welcome, <span id="student-email"></span>!</p>
+  <button id="logout-btn">Logout</button>
 </section>
 
 <section id="fee">
@@ -184,7 +184,7 @@
   <p>Coming soon...</p>
 </section>
 
-<!-- Firebase SDKs -->
+<!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-auth.js"></script>
 
@@ -202,61 +202,61 @@
   };
 
   const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
+  const auth = getAuth();
 
-  // Show/hide sections
+  // Utility function to hide all main sections
+  function hideAllSections() {
+    document.querySelectorAll("section").forEach(sec => sec.classList.remove("visible"));
+  }
+
+  // Show a given section and hide others
   window.showSection = function(id) {
-    document.querySelectorAll("section").forEach(sec => sec.style.display = "none");
-    document.getElementById(id).style.display = "block";
+    hideAllSections();
+    const section = document.getElementById(id);
+    if (section) section.classList.add("visible");
   };
 
-  // Dropdown Student options open
-  window.openNewStudent = function() {
-    document.querySelectorAll("section").forEach(sec => sec.style.display = "none");
-    document.getElementById('new-student-page').style.display = "block";
-  };
-
-  window.openExistingStudent = function() {
-    document.querySelectorAll("section").forEach(sec => sec.style.display = "none");
-    document.getElementById('existing-student-page').style.display = "block";
-    document.getElementById('login-message').textContent = '';
-    document.getElementById('student-dashboard').style.display = "none";
-  };
-
-  // Login form handling
-  document.getElementById('login-form').addEventListener('submit', (e) => {
+  // Handle login form submission
+  document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
+    const emailInput = document.getElementById('email');
+    const passwordInput = document.getElementById('password');
+    const loginMessage = document.getElementById('login-message');
 
-    signInWithEmailAndPassword(auth, email, password)
-      .then(() => {
-        document.getElementById('login-message').textContent = '';
-      })
-      .catch(() => {
-        document.getElementById('login-message').textContent = 'Login failed. Please check credentials.';
-      });
-  });
-
-  // Auth state observer
-  onAuthStateChanged(auth, user => {
-    if(user) {
-      document.getElementById('student-dashboard').style.display = "block";
-      // Hide login form when logged in
-      document.getElementById('login-form').style.display = "none";
-      document.getElementById('login-message').textContent = '';
-    } else {
-      document.getElementById('student-dashboard').style.display = "none";
-      document.getElementById('login-form').style.display = "block";
+    loginMessage.textContent = '';
+    try {
+      await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
+      loginMessage.style.color = 'green';
+      loginMessage.textContent = 'Login successful! Redirecting...';
+      // Clear form
+      emailInput.value = '';
+      passwordInput.value = '';
+    } catch (error) {
+      loginMessage.style.color = 'red';
+      loginMessage.textContent = 'Login failed. Please check your credentials.';
     }
   });
 
-  window.logout = function() {
-    signOut(auth);
-  };
+  // Listen for auth state changes
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // Show dashboard, hide login form and other student sections
+      hideAllSections();
+      const dashboard = document.getElementById('student-dashboard');
+      dashboard.classList.add('visible');
+      document.getElementById('student-email').textContent = user.email;
+    } else {
+      // If not logged in, show home or existing student login section as default
+      showSection('home');
+    }
+  });
 
-  // Initially show home
-  showSection('home');
+  // Logout button handler
+  document.getElementById('logout-btn').addEventListener('click', async () => {
+    await signOut(auth);
+    showSection('home');
+  });
+
 </script>
 
 </body>
