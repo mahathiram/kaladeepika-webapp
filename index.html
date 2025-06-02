@@ -80,7 +80,7 @@
       section.visible {
           display: block;
       }
-      #login-form input {
+      #login-form input, #profile-form input, #profile-form select {
           display: block;
           margin: 1em 0;
           padding: 0.5em;
@@ -90,18 +90,7 @@
           border: 1px solid #ccc;
           box-sizing: border-box;
       }
-      #login-form button {
-          background-color: #8e44ad;
-          color: white;
-          border: none;
-          padding: 0.6em 1.2em;
-          border-radius: 8px;
-          cursor: pointer;
-      }
-      #login-form button:hover {
-          background-color: #732d91;
-      }
-      a button {
+      #login-form button, #profile-form button, a button {
           background-color: #8e44ad;
           color: white;
           border: none;
@@ -110,13 +99,22 @@
           cursor: pointer;
           font-size: 1em;
       }
-      a button:hover {
+      #login-form button:hover, #profile-form button:hover, a button:hover {
           background-color: #732d91;
+      }
+      a button {
+          text-decoration: none;
+      }
+      #login-message, #profile-message {
+          margin-top: 0.5em;
+          min-height: 1.5em;
+          font-weight: 600;
       }
       #login-message {
           color: red;
-          margin-top: 0.5em;
-          min-height: 1.5em;
+      }
+      #profile-message {
+          color: green;
       }
   </style>
 </head>
@@ -166,7 +164,28 @@
 <section id="student-dashboard">
   <h2>Student Dashboard</h2>
   <p>Welcome, <span id="student-email"></span>!</p>
+  <button id="edit-profile-btn">Edit Profile</button>
   <button id="logout-btn">Logout</button>
+</section>
+
+<section id="edit-profile-section">
+  <h2>Edit Profile</h2>
+  <form id="profile-form">
+    <input type="text" id="first-name" placeholder="First Name" required />
+    <input type="text" id="last-name" placeholder="Last Name" required />
+    <label for="batch">Batch</label>
+    <select id="batch" required>
+      <option value="" disabled>Select batch</option>
+      <option value="Adults">Adults</option>
+      <option value="Intermediate">Intermediate</option>
+      <option value="Level 2">Level 2</option>
+      <option value="Level 1">Level 1</option>
+      <option value="Level 0">Level 0</option>
+    </select>
+    <button type="submit">Save Profile</button>
+  </form>
+  <p id="profile-message"></p>
+  <button onclick="backToDashboard()">Back to Dashboard</button>
 </section>
 
 <section id="fee">
@@ -184,13 +203,15 @@
   <p>Coming soon...</p>
 </section>
 
-<!-- Firebase SDK -->
+<!-- Firebase SDKs -->
 <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-app.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-database.js"></script>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.4/firebase-app.js";
   import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/9.6.4/firebase-auth.js";
+  import { getDatabase, ref, set, get, child } from "https://www.gstatic.com/firebasejs/9.6.4/firebase-database.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyAD8RgBbelFsLkn1yeFTK-wKmTEOZcxzQU",
@@ -203,20 +224,25 @@
 
   const app = initializeApp(firebaseConfig);
   const auth = getAuth();
+  const db = getDatabase(app);
 
-  // Utility function to hide all main sections
   function hideAllSections() {
     document.querySelectorAll("section").forEach(sec => sec.classList.remove("visible"));
   }
 
-  // Show a given section and hide others
   window.showSection = function(id) {
     hideAllSections();
     const section = document.getElementById(id);
     if (section) section.classList.add("visible");
   };
 
-  // Handle login form submission
+  function showDashboard(user) {
+    hideAllSections();
+    const dashboard = document.getElementById('student-dashboard');
+    dashboard.classList.add('visible');
+    document.getElementById('student-email').textContent = user.email;
+  }
+
   document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
     const emailInput = document.getElementById('email');
@@ -228,7 +254,6 @@
       await signInWithEmailAndPassword(auth, emailInput.value, passwordInput.value);
       loginMessage.style.color = 'green';
       loginMessage.textContent = 'Login successful! Redirecting...';
-      // Clear form
       emailInput.value = '';
       passwordInput.value = '';
     } catch (error) {
@@ -237,26 +262,81 @@
     }
   });
 
-  // Listen for auth state changes
   onAuthStateChanged(auth, (user) => {
     if (user) {
-      // Show dashboard, hide login form and other student sections
-      hideAllSections();
-      const dashboard = document.getElementById('student-dashboard');
-      dashboard.classList.add('visible');
-      document.getElementById('student-email').textContent = user.email;
+      showDashboard(user);
     } else {
-      // If not logged in, show home or existing student login section as default
       showSection('home');
     }
   });
 
-  // Logout button handler
   document.getElementById('logout-btn').addEventListener('click', async () => {
     await signOut(auth);
     showSection('home');
   });
 
+  document.getElementById('edit-profile-btn').addEventListener('click', () => {
+    hideAllSections();
+    document.getElementById('profile-message').textContent = '';
+    document.getElementById('profile-form').reset();
+    loadProfile();
+    showSection('edit-profile-section');
+  });
+
+  // Load profile from Firebase Database
+  function loadProfile() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    const profileRef = ref(db, 'users/' + user.uid + '/profile');
+    get(profileRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const data = snapshot.val();
+        document.getElementById('first-name').value = data.firstName || '';
+        document.getElementById('last-name').value = data.lastName || '';
+        document.getElementById('batch').value = data.batch || '';
+      }
+    }).catch((error) => {
+      console.error('Error fetching profile:', error);
+    });
+  }
+
+  document.getElementById('profile-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const user = auth.currentUser;
+    if (!user) {
+      alert("You must be logged in to save profile");
+      return;
+    }
+
+    const firstName = document.getElementById('first-name').value.trim();
+    const lastName = document.getElementById('last-name').value.trim();
+    const batch = document.getElementById('batch').value;
+
+    const profileMessage = document.getElementById('profile-message');
+    profileMessage.textContent = '';
+
+    set(ref(db, 'users/' + user.uid + '/profile'), {
+      firstName,
+      lastName,
+      batch
+    }).then(() => {
+      profileMessage.style.color = 'green';
+      profileMessage.textContent = 'Profile saved successfully!';
+    }).catch((error) => {
+      profileMessage.style.color = 'red';
+      profileMessage.textContent = 'Error saving profile: ' + error.message;
+    });
+  });
+
+  window.backToDashboard = function() {
+    const user = auth.currentUser;
+    if (user) {
+      showDashboard(user);
+    } else {
+      showSection('home');
+    }
+  }
 </script>
 
 </body>
