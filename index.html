@@ -23,7 +23,6 @@
           flex-wrap: wrap;
           justify-content: center;
           background-color: #fce4ec;
-          position: relative;
       }
 
       nav > div {
@@ -65,18 +64,33 @@
       }
 
       .content {
-          padding: 1.5rem;
+          padding: 2rem;
           text-align: center;
+      }
+
+      .hidden {
+          display: none;
+      }
+
+      .btn {
+          background-color: #880e4f;
+          color: white;
+          padding: 0.75rem 1.5rem;
+          border: none;
+          font-size: 16px;
+          border-radius: 5px;
+          cursor: pointer;
+          margin-top: 1rem;
+      }
+
+      .btn:hover {
+          background-color: #a91c63;
       }
 
       @media (max-width: 600px) {
           nav {
               flex-direction: column;
               align-items: stretch;
-          }
-
-          nav > div {
-              width: 100%;
           }
 
           .dropdown {
@@ -92,16 +106,9 @@
               display: block;
           }
 
-          nav a.toggle-dropdown {
-              position: relative;
-              background-color: #fce4ec;
-              border-top: 1px solid #e0e0e0;
-          }
-
           nav a.toggle-dropdown::after {
               content: '▼';
-              position: absolute;
-              right: 1rem;
+              float: right;
           }
       }
   </style>
@@ -112,12 +119,12 @@
 </header>
 
 <nav id="main-nav">
-  <a href="#">Home</a>
+  <a href="#" onclick="showSection('home')">Home</a>
   <div>
-    <a href="#" class="toggle-dropdown">Students</a>
+    <a href="#" class="toggle-dropdown" onclick="toggleDropdown(event)">Students</a>
     <div class="dropdown">
-      <a href="https://docs.google.com/forms/d/1NIkdapshL1aWwwqGsOBe8dT74IBHT-RJkqERRsYGKuU/viewform" target="_blank">New Student</a>
-      <a href="#">Existing Students</a>
+      <a href="#" onclick="showSection('new-student')">New Student</a>
+      <a href="#" onclick="showSection('existing-student')">Existing Students</a>
     </div>
   </div>
   <a href="#">Fee</a>
@@ -125,19 +132,36 @@
   <a href="#">Communications</a>
 </nav>
 
-<div class="content">
+<div class="content" id="home">
   <p>Welcome to the official web app for Kala Deepika Dance Academy!</p>
 </div>
 
+<div class="content hidden" id="new-student">
+  <h2>Welcome to Kala Deepika Dance Academy!</h2>
+  <p>Kuchipudi Dance lessons for both adults and Kids (5+ years)</p>
+  <a href="https://docs.google.com/forms/d/e/1FAIpQLSc73VlKb8-UGywATqaXgtNd_dwdJ4ukGZa8hRnM_vG91NcYnA/viewform" target="_blank">
+    <button class="btn">Enroll Here</button>
+  </a>
+</div>
+
+<div class="content hidden" id="existing-student">
+  <h2>Existing Students</h2>
+  <p>Feature coming soon!</p>
+</div>
+
 <script>
-  // Enable dropdown toggle on mobile
-  document.querySelectorAll('.toggle-dropdown').forEach(btn => {
-    btn.addEventListener('click', function (e) {
-      e.preventDefault();
-      const parent = this.parentElement;
-      parent.classList.toggle('active');
+  function showSection(id) {
+    document.querySelectorAll('.content').forEach(section => {
+      section.classList.add('hidden');
     });
-  });
+    document.getElementById(id).classList.remove('hidden');
+  }
+
+  function toggleDropdown(e) {
+    e.preventDefault();
+    const parent = e.target.parentElement;
+    parent.classList.toggle('active');
+  }
 </script>
 </body>
 </html>
