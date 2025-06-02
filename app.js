@@ -3,9 +3,10 @@ const firebaseConfig = {
   apiKey: "AIzaSyAD8RgBbelFsLkn1yeFTK-wKmTEOZcxzQU",
   authDomain: "kala-deepika.firebaseapp.com",
   projectId: "kala-deepika",
-  storageBucket: "kala-deepika.appspot.com",
+  storageBucket: "kala-deepika.firebasestorage.app",
   messagingSenderId: "121888927504",
-  appId: "1:121888927504:web:8c11dbf7e6bdab66c97f95"
+  appId: "1:121888927504:web:8c11dbf7e6bdab66c97f95",
+  measurementId: "G-NX0BEN41Y1"
 };
 
 // Initialize Firebase
@@ -13,93 +14,70 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// UI logic
+// UI Logic
 function showSection(id) {
   document.querySelectorAll("section").forEach(sec => sec.classList.remove("visible"));
   document.getElementById(id).classList.add("visible");
 }
 
 function showStudentOption(option) {
+  showSection("students");
   document.getElementById('new-student').style.display = (option === 'new') ? 'block' : 'none';
   document.getElementById('existing-student').style.display = (option === 'existing') ? 'block' : 'none';
   document.getElementById('student-dashboard').style.display = 'none';
+  document.getElementById('edit-profile').style.display = 'none';
 }
 
-// Auth
-const loginForm = document.getElementById('login-form');
-if (loginForm) {
-  loginForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('email').value;
-    const password = document.getElementById('password').value;
-
-    try {
-      await auth.signInWithEmailAndPassword(email, password);
-      document.getElementById('login-message').textContent = '';
-    } catch (err) {
-      document.getElementById('login-message').textContent = 'Login failed. Please check credentials.';
-    }
-  });
+function showEditProfile() {
+  document.getElementById('edit-profile').style.display = 'block';
+  document.getElementById('save-message').textContent = '';
 }
 
-const signupForm = document.getElementById('signup-form');
-if (signupForm) {
-  signupForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
-    try {
-      await auth.createUserWithEmailAndPassword(email, password);
-      alert("Signup successful! You can now log in.");
-      showSection('students');
-    } catch (error) {
-      alert("Signup error: " + error.message);
-    }
-  });
+function logout() {
+  auth.signOut();
 }
 
-const resetForm = document.getElementById('reset-form');
-if (resetForm) {
-  resetForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('reset-email').value;
-    try {
-      await auth.sendPasswordResetEmail(email);
-      alert("Password reset email sent.");
-    } catch (error) {
-      alert("Reset error: " + error.message);
-    }
-  });
-}
+// Auth logic
+document.getElementById('login-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const email = document.getElementById('email').value;
+  const password = document.getElementById('password').value;
+  try {
+    await auth.signInWithEmailAndPassword(email, password);
+    document.getElementById('login-message').textContent = '';
+  } catch (err) {
+    document.getElementById('login-message').textContent = 'Login failed. Please check credentials.';
+  }
+});
 
-// Profile Save
-const profileForm = document.getElementById('profile-form');
-if (profileForm) {
-  profileForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const user = auth.currentUser;
-    if (!user) return;
+auth.onAuthStateChanged(user => {
+  if (user) {
+    document.getElementById('student-dashboard').style.display = 'block';
+    document.getElementById('existing-student').style.display = 'none';
+    document.getElementById('fee-nav').style.display = 'inline-block';
+    document.getElementById('progress-nav').style.display = 'inline-block';
+  } else {
+    document.getElementById('student-dashboard').style.display = 'none';
+    document.getElementById('fee-nav').style.display = 'none';
+    document.getElementById('progress-nav').style.display = 'none';
+  }
+});
 
-    const profileData = {
+// Save profile
+document.getElementById('profile-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const user = auth.currentUser;
+  if (user) {
+    const data = {
       firstName: document.getElementById('first-name').value,
       lastName: document.getElementById('last-name').value,
       batch: document.getElementById('batch').value
     };
-
     try {
-      await db.collection('students').doc(user.uid).set(profileData);
+      await db.collection("students").doc(user.uid).set(data);
       document.getElementById('save-message').textContent = 'Profile saved successfully!';
     } catch (err) {
-      document.getElementById('save-message').textContent = 'Error saving profile: ' + err.message;
+      document.getElementById('save-message').textContent = 'Failed to save profile.';
     }
-  });
-}
-
-// Auth State Observer
-auth.onAuthStateChanged(user => {
-  const loggedIn = !!user;
-  document.getElementById('student-dashboard').style.display = loggedIn ? 'block' : 'none';
-  document.getElementById('existing-student').style.display = loggedIn ? 'none' : 'block';
-  document.getElementById('fee').style.display = loggedIn ? 'block' : 'none';
-  document.getElementById('progress').style.display = loggedIn ? 'block' : 'none';
+  }
 });

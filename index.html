@@ -14,7 +14,13 @@
 
 <nav>
   <button onclick="showSection('home')">Home</button>
-  <button onclick="showSection('students')">Students</button>
+  <div class="dropdown">
+    <button class="dropbtn">Students</button>
+    <div class="dropdown-content">
+      <a href="#" onclick="showStudentOption('new')">New Student</a>
+      <a href="#" onclick="showStudentOption('existing')">Existing Student</a>
+    </div>
+  </div>
   <button id="fee-nav" onclick="showSection('fee')" style="display:none;">Fee</button>
   <button id="progress-nav" onclick="showSection('progress')" style="display:none;">Progress</button>
   <button onclick="showSection('communications')">Communications</button>
@@ -26,10 +32,6 @@
 </section>
 
 <section id="students">
-  <h2>Students</h2>
-  <button onclick="showStudentOption('new')">New Student</button>
-  <button onclick="showStudentOption('existing')">Existing Student</button>
-
   <div id="new-student" style="display:none;">
     <h3>Welcome to Kala Deepika Dance Academy!</h3>
     <p>Kuchipudi Dance lessons for both adults and Kids (5+ years)</p>
@@ -46,10 +48,6 @@
       <button type="submit">Login</button>
     </form>
     <p id="login-message" style="color: red;"></p>
-    <p>
-      <a href="#" onclick="showReset()">Forgot password?</a> |
-      <a href="#" onclick="showSignup()">Sign up</a>
-    </p>
   </div>
 
   <div id="student-dashboard" style="display:none;">
@@ -74,25 +72,6 @@
       <button type="submit">Save Profile</button>
     </form>
     <p id="save-message"></p>
-  </div>
-
-  <div id="signup-section" style="display:none;">
-    <h3>Sign Up</h3>
-    <form id="signup-form">
-      <input type="email" id="signup-email" placeholder="Email" required />
-      <input type="password" id="signup-password" placeholder="Password" required />
-      <button type="submit">Create Account</button>
-    </form>
-    <p id="signup-message" style="color: green;"></p>
-  </div>
-
-  <div id="reset-section" style="display:none;">
-    <h3>Reset Password</h3>
-    <form id="reset-form">
-      <input type="email" id="reset-email" placeholder="Enter your email" required />
-      <button type="submit">Send Reset Link</button>
-    </form>
-    <p id="reset-message" style="color: green;"></p>
   </div>
 </section>
 

@@ -17,10 +17,10 @@ nav {
     background-color: #f2eaf4;
     padding: 0.5em;
     flex-wrap: wrap;
+    gap: 1em;
 }
 
 nav button {
-    margin: 0.5em;
     padding: 0.6em 1.2em;
     background-color: #8e44ad;
     color: white;
@@ -29,8 +29,50 @@ nav button {
     cursor: pointer;
 }
 
-nav button:hover {
+nav button:hover,
+.dropbtn:hover {
     background-color: #732d91;
+}
+
+/* Dropdown */
+.dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.dropbtn {
+    padding: 0.6em 1.2em;
+    background-color: #8e44ad;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #ffffff;
+    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+    z-index: 1;
+    min-width: 160px;
+    border-radius: 8px;
+}
+
+.dropdown-content a {
+    color: black;
+    padding: 0.75em 1em;
+    text-decoration: none;
+    display: block;
+    border-bottom: 1px solid #eee;
+}
+
+.dropdown-content a:hover {
+    background-color: #f2eaf4;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
 }
 
 section {
@@ -42,33 +84,36 @@ section {
     display: block;
 }
 
-input, select {
+form input,
+form select {
     display: block;
     margin: 1em 0;
-    padding: 0.5em;
+    padding: 0.6em;
     width: 100%;
     max-width: 300px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
 }
 
-button {
+form button {
+    padding: 0.6em 1.2em;
     background-color: #8e44ad;
     color: white;
     border: none;
-    padding: 0.6em 1.2em;
     border-radius: 8px;
     cursor: pointer;
 }
 
-button:hover {
+form button:hover {
     background-color: #732d91;
 }
 
-#save-message, #login-message {
-    margin-top: 1em;
+#save-message {
     color: green;
+    margin-top: 1em;
 }
 
-form {
-    max-width: 400px;
+#login-message {
+    color: red;
     margin-top: 1em;
 }
