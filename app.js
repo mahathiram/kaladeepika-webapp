@@ -1,4 +1,4 @@
-// Firebase config & initialization
+// Firebase config
 const firebaseConfig = {
   apiKey: "AIzaSyAD8RgBbelFsLkn1yeFTK-wKmTEOZcxzQU",
   authDomain: "kala-deepika.firebaseapp.com",
@@ -6,95 +6,85 @@ const firebaseConfig = {
   storageBucket: "kala-deepika.firebasestorage.app",
   messagingSenderId: "121888927504",
   appId: "1:121888927504:web:8c11dbf7e6bdab66c97f95",
-  measurementId: "G-NX0BEN41Y1"
 };
 
 firebase.initializeApp(firebaseConfig);
-
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-function clearMessages() {
-  document.getElementById("login-message").textContent = "";
-  document.getElementById("signup-message").textContent = "";
-  document.getElementById("save-message").textContent = "";
-}
-
-// Login with email/password
-document.getElementById("login-form").addEventListener("submit", (e) => {
+// Login
+document.getElementById("login-form").addEventListener("submit", e => {
   e.preventDefault();
-  clearMessages();
-  const email = document.getElementById("login-email").value;
-  const password = document.getElementById("login-password").value;
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
 
   auth.signInWithEmailAndPassword(email, password)
-    .then(({ user }) => {
-      afterLogin(user);
+    .then(userCredential => {
+      loadAfterLogin(userCredential.user);
     })
-    .catch((error) => {
+    .catch(error => {
       document.getElementById("login-message").textContent = error.message;
     });
 });
 
-// Google sign-in
-document.getElementById("google-signin-btn").addEventListener("click", () => {
-  clearMessages();
-  const provider = new firebase.auth.GoogleAuthProvider();
-  auth.signInWithPopup(provider)
-    .then(({ user }) => {
-      // Create Firestore doc if doesn't exist
-      db.collection("students").doc(user.uid).get()
-        .then(doc => {
-          if (!doc.exists) {
-            const names = user.displayName ? user.displayName.split(' ') : ["", ""];
-            db.collection("students").doc(user.uid).set({
-              firstName: names[0] || "",
-              lastName: names.slice(1).join(' ') || "",
-              batch: ""
-            });
-          }
-        });
-      afterLogin(user);
-    })
-    .catch((error) => {
-      document.getElementById("signup-message").textContent = error.message;
-    });
-});
-
-// Signup with email/password
-document.getElementById("signup-form").addEventListener("submit", (e) => {
+// Signup
+document.getElementById("signup-form").addEventListener("submit", e => {
   e.preventDefault();
-  clearMessages();
-
   const email = document.getElementById("signup-email").value;
   const password = document.getElementById("signup-password").value;
   const firstName = document.getElementById("signup-first-name").value;
   const lastName = document.getElementById("signup-last-name").value;
   const batch = document.getElementById("signup-batch").value;
 
-  auth.createUserWithEmailAndPassword(email, password)
-    .then(({ user }) => {
-      return db.collection("students").doc(user.uid).set({
-        firstName,
-        lastName,
-        batch
-      }).then(() => user);
-    })
-    .then(user => {
-      afterLogin(user);
-    })
-    .catch((error) => {
-      document.getElementById("signup-message").textContent = error.message;
-    });
+  auth.fetchSignInMethodsForEmail(email).then(methods => {
+    if (methods.length > 0) {
+      document.getElementById("signup-message").textContent = "Email already in use. Try logging in.";
+    } else {
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(cred => {
+          return db.collection("students").doc(cred.user.uid).set({
+            firstName, lastName, batch, email
+          });
+        })
+        .then(() => {
+          document.getElementById("signup-message").textContent = "Account created! Logging in...";
+          loadAfterLogin(auth.currentUser);
+        })
+        .catch(error => {
+          document.getElementById("signup-message").textContent = error.message;
+        });
+    }
+  });
 });
 
-function afterLogin(user) {
-  clearMessages();
+// Google sign-in
+function googleSignIn() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider)
+    .then(result => {
+      const user = result.user;
+      db.collection("students").doc(user.uid).set({
+        firstName: user.displayName?.split(" ")[0] || "",
+        lastName: user.displayName?.split(" ")[1] || "",
+        email: user.email,
+        batch: ""
+      }, { merge: true });
+      loadAfterLogin(user);
+    });
+}
 
+// Password reset
+function resetPassword() {
+  const email = document.getElementById("email").value;
+  if (!email) return alert("Enter email to reset password.");
+  auth.sendPasswordResetEmail(email)
+    .then(() => alert("Password reset email sent!"))
+    .catch(error => alert(error.message));
+}
+
+function loadAfterLogin(user) {
   document.getElementById("existing-student").style.display = "none";
-  document.getElementById("new-student").style.display = "none";
   document.getElementById("student-dashboard").style.display = "block";
-
   document.getElementById("fee-nav").style.display = "inline-block";
   document.getElementById("progress-nav").style.display = "inline-block";
   document.getElementById("edit-nav").style.display = "inline-block";
@@ -114,67 +104,39 @@ function loadProfile(uid) {
   });
 }
 
-document.getElementById("profile-form").addEventListener("submit", (e) => {
+// Edit profile save
+document.getElementById("profile-form").addEventListener("submit", e => {
   e.preventDefault();
   const user = auth.currentUser;
   if (!user) return;
-
-  clearMessages();
-
-  const firstName = document.getElementById("first-name").value;
-  const lastName = document.getElementById("last-name").value;
-  const batch = document.getElementById("batch").value;
-
-  db.collection("students").doc(user.uid).set({
-    firstName,
-    lastName,
-    batch
-  }).then(() => {
-    document.getElementById("save-message").textContent = "Profile saved successfully!";
-  }).catch(error => {
-    document.getElementById("save-message").textContent = "Error: " + error.message;
-  });
+  const data = {
+    firstName: document.getElementById("first-name").value,
+    lastName: document.getElementById("last-name").value,
+    batch: document.getElementById("batch").value,
+  };
+  db.collection("students").doc(user.uid).update(data)
+    .then(() => document.getElementById("save-message").textContent = "Profile saved!");
 });
 
+// Navigation
+function logout() {
+  auth.signOut().then(() => location.reload());
+}
 function showEditProfile() {
   showSection('students');
   document.getElementById("student-dashboard").style.display = "none";
   document.getElementById("edit-profile").style.display = "block";
 }
-
-function logout() {
-  auth.signOut().then(() => {
-    clearMessages();
-
-    document.getElementById("student-dashboard").style.display = "none";
-    document.getElementById("existing-student").style.display = "block";
-    document.getElementById("edit-profile").style.display = "none";
-
-    document.getElementById("fee-nav").style.display = "none";
-    document.getElementById("progress-nav").style.display = "none";
-    document.getElementById("edit-nav").style.display = "none";
-    document.getElementById("logout-nav").style.display = "none";
-  });
+function showSection(id) {
+  document.querySelectorAll("section").forEach(s => s.classList.remove("visible"));
+  document.getElementById(id).classList.add("visible");
 }
-
-// Keep showSection and showStudentOption functions consistent with your index.html script
-function showSection(sectionId) {
-  document.querySelectorAll("section").forEach(section => {
-    section.classList.remove("visible");
-  });
-  document.getElementById(sectionId).classList.add("visible");
-}
-
 function showStudentOption(type) {
-  showSection('students');
+  showSection("students");
   document.getElementById("new-student").style.display = "none";
   document.getElementById("existing-student").style.display = "none";
   document.getElementById("student-dashboard").style.display = "none";
   document.getElementById("edit-profile").style.display = "none";
-
-  if (type === "new") {
-    document.getElementById("new-student").style.display = "block";
-  } else if (type === "existing") {
-    document.getElementById("existing-student").style.display = "block";
-  }
+  if (type === "new") document.getElementById("new-student").style.display = "block";
+  if (type === "existing") document.getElementById("existing-student").style.display = "block";
 }
