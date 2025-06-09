@@ -54,6 +54,29 @@
     <p id="login-message" style="color: red;"></p>
   </div>
 
+  <div id="signup-section" style="display:none;">
+    <h3>Create a New Account</h3>
+    <button onclick="signUpWithGoogle()">Sign Up with Google</button>
+
+    <p>Or sign up manually:</p>
+    <form id="signup-form">
+      <input type="email" id="signup-email" placeholder="Email" required />
+      <input type="password" id="signup-password" placeholder="Password" required />
+      <input type="text" id="signup-first-name" placeholder="First Name" required />
+      <input type="text" id="signup-last-name" placeholder="Last Name" required />
+      <select id="signup-batch" required>
+        <option value="">Select Batch</option>
+        <option>Adults</option>
+        <option>Intermediate</option>
+        <option>Level 2</option>
+        <option>Level 1</option>
+        <option>Level 0</option>
+      </select>
+      <button type="submit">Create Account</button>
+    </form>
+    <p id="signup-message" style="color: green;"></p>
+  </div>
+
   <div id="student-dashboard" style="display:none;">
     <h3>Welcome, student!</h3>
     <button onclick="showEditProfile()">Edit Profile</button>
