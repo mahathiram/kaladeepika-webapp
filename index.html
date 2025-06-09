@@ -14,7 +14,6 @@
 
 <nav>
   <button onclick="showSection('home')">Home</button>
-
   <div class="dropdown">
     <button class="dropbtn">Students</button>
     <div class="dropdown-content">
@@ -22,7 +21,6 @@
       <a href="#" onclick="showStudentOption('existing')">Existing Students</a>
     </div>
   </div>
-
   <button id="students-tab" style="display:none;" onclick="showSection('admin-dashboard')">Students</button>
   <button id="progress-tab" style="display:none;" onclick="showSection('student-progress')">Student Progress</button>
   <button id="fee-nav" style="display:none;" onclick="showSection('fee')">Fee</button>
@@ -32,7 +30,7 @@
 </nav>
 
 <section id="home" class="visible">
-  <h2>Welcome!</h2>
+  <h2 id="welcome-message">Welcome!</h2>
   <p>Explore classical Kuchipudi dance lessons for all ages.</p>
 </section>
 
@@ -57,7 +55,6 @@
   <div id="signup-section" style="display:none;">
     <h3>Create a New Account</h3>
     <button onclick="signUpWithGoogle()">Sign Up with Google</button>
-
     <p>Or sign up manually:</p>
     <form id="signup-form">
       <input type="email" id="signup-email" placeholder="Email" required />
