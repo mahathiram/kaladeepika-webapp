@@ -180,6 +180,49 @@ td {
     color: white;
 }
 
+.freeze-table {
+    border-collapse: collapse;
+    width: 100%;
+}
+.freeze-table input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 4px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+}
+
+
+.freeze-table th,
+.freeze-table td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    white-space: nowrap;
+}
+
+.freeze-table thead th {
+    position: sticky;
+    top: 0;
+    background-color: #f2f2f2;
+    z-index: 2;
+}
+
+.freeze-table td:first-child,
+.freeze-table th:first-child,
+.freeze-table td:nth-child(2),
+.freeze-table th:nth-child(2) {
+    position: sticky;
+    left: 0;
+    background-color: #fff;
+    z-index: 1;
+}
+
+.freeze-table td:nth-child(2),
+.freeze-table th:nth-child(2) {
+    z-index: 2;
+}
+
+
 @media (max-width: 600px) {
     nav {
         flex-direction: column;

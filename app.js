@@ -76,6 +76,82 @@ document.getElementById("login-form").addEventListener("submit", e => {
     });
 });
 
+function loadStudentListFromSheet() {
+  google.charts.load('current', { packages: ['table'] });
+  google.charts.setOnLoadCallback(drawStudentList);
+
+  function drawStudentList() {
+    const query = new google.visualization.Query(
+      'https://docs.google.com/spreadsheets/d/1T0V-PdffEzfdMgpjey9A5fZxr-EJ-xvHSH9gPNptuKM/gviz/tq?sheet=Jun25&tq=SELECT A, B, C, D, E, H LIMIT 60'
+    );
+    query.send(response => {
+      const data = response.getDataTable();
+
+      const thead = document.querySelector("#student-list-table thead");
+      const tbody = document.querySelector("#student-list-table tbody");
+      const filterRow = document.getElementById("filter-row");
+      const headerRow = document.getElementById("header-row");
+
+      thead.innerHTML = "";
+      filterRow.innerHTML = "";
+      headerRow.innerHTML = "";
+      tbody.innerHTML = "";
+
+      // Store all original data rows for filtering
+      const allRows = [];
+
+      // Header row
+      for (let i = 0; i < data.getNumberOfColumns(); i++) {
+        const th = document.createElement("th");
+        th.textContent = data.getColumnLabel(i);
+        headerRow.appendChild(th);
+
+        const filterTh = document.createElement("th");
+        const input = document.createElement("input");
+        input.setAttribute("type", "text");
+        input.setAttribute("data-col", i);
+        input.placeholder = "Filter...";
+        input.addEventListener("keyup", filterTable);
+        filterTh.appendChild(input);
+        filterRow.appendChild(filterTh);
+      }
+
+      // Add rows to table and memory
+      for (let i = 0; i < data.getNumberOfRows(); i++) {
+        const row = [];
+        for (let j = 0; j < data.getNumberOfColumns(); j++) {
+          row.push(data.getValue(i, j) || "");
+        }
+        allRows.push(row);
+      }
+
+      renderTable(allRows);
+
+      function renderTable(rows) {
+        tbody.innerHTML = "";
+        rows.forEach(rowData => {
+          const tr = document.createElement("tr");
+          rowData.forEach(cell => {
+            const td = document.createElement("td");
+            td.textContent = cell;
+            tr.appendChild(td);
+          });
+          tbody.appendChild(tr);
+        });
+      }
+
+      function filterTable() {
+        const filters = Array.from(filterRow.querySelectorAll("input")).map(input => input.value.toLowerCase());
+        const filteredRows = allRows.filter(row =>
+          row.every((cell, i) => cell.toString().toLowerCase().includes(filters[i]))
+        );
+        renderTable(filteredRows);
+      }
+    });
+  }
+}
+
+
 function loadAdminSummaryTable() {
   google.charts.load('current', { packages: ['corechart', 'table'] });
   google.charts.setOnLoadCallback(drawSummaryTable);
@@ -184,6 +260,9 @@ document.getElementById("profile-form").addEventListener("submit", e => {
 function showAdminTab(tab) {
   document.querySelectorAll(".admin-tab").forEach(el => el.style.display = "none");
   document.getElementById(`admin-${tab}`).style.display = "block";
+  if (tab === "students") {
+    loadStudentListFromSheet(); // ⬅️ Add this line
+  }
 }
 
 auth.onAuthStateChanged(user => {
