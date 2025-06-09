@@ -28,12 +28,13 @@ function showSection(id) {
 function setNavForAdmin() {
   const visibleIds = ['home', 'students-tab', 'progress-tab', 'fee-nav', 'logout-nav'];
   // Hide all buttons first
-  document.querySelectorAll('nav > button').forEach(btn => (btn.style.display = 'none'));
+  document.querySelectorAll('nav button').forEach(btn => (btn.style.display = 'none'));
   document.getElementById('student-dropdown').style.display = 'none';
   // Show required buttons
   visibleIds.forEach(id => {
     document.getElementById(id).style.display = 'inline-block';
   });
+  document.getElementById('home').style.display = 'inline-block';
   document.getElementById('edit-nav').style.display = 'none';
   document.getElementById('login-nav').style.display = 'none';
   document.getElementById('signup-nav').style.display = 'none';
@@ -41,11 +42,12 @@ function setNavForAdmin() {
 
 // Navigation for student user
 function setNavForStudent() {
-  document.querySelectorAll('nav > button').forEach(btn => (btn.style.display = 'none'));
+  document.querySelectorAll('nav button').forEach(btn => (btn.style.display = 'none'));
   document.getElementById('student-dropdown').style.display = 'block';
   ['edit-nav', 'fee-nav', 'logout-nav'].forEach(id => {
     document.getElementById(id).style.display = 'inline-block';
   });
+  document.getElementById('home').style.display = 'inline-block';
   document.getElementById('students-tab').style.display = 'none';
   document.getElementById('progress-tab').style.display = 'none';
   document.getElementById('fee-nav').style.display = 'inline-block';
@@ -55,7 +57,7 @@ function setNavForStudent() {
 
 // Navigation for logged out user
 function setNavForLoggedOut() {
-  document.querySelectorAll('nav > button').forEach(btn => (btn.style.display = 'inline-block'));
+  document.querySelectorAll('nav button').forEach(btn => (btn.style.display = 'inline-block'));
   document.getElementById('student-dropdown').style.display = 'none';
   document.getElementById('students-tab').style.display = 'none';
   document.getElementById('progress-tab').style.display = 'none';
