@@ -1,4 +1,3 @@
-<!-- Updated index.html with Admin Dashboard -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -8,6 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+
 <header>
   <h1>Kala Deepika Dance Academy</h1>
 </header>
@@ -23,9 +23,9 @@
     </div>
   </div>
 
+  <button id="students-tab" style="display:none;" onclick="showSection('admin-dashboard')">Students</button>
+  <button id="progress-tab" style="display:none;" onclick="showSection('student-progress')">Student Progress</button>
   <button id="fee-nav" style="display:none;" onclick="showSection('fee')">Fee</button>
-  <button id="progress-nav" style="display:none;" onclick="showSection('progress')">Progress</button>
-  <button id="admin-nav" style="display:none;" onclick="showSection('admin-dashboard')">Admin Dashboard</button>
   <button id="edit-nav" style="display:none;" onclick="showEditProfile()">Edit Profile</button>
   <button id="logout-nav" style="display:none;" onclick="logout()">Logout</button>
   <button onclick="showSection('communications')">Communications</button>
@@ -53,25 +53,68 @@
     </form>
     <p id="login-message" style="color: red;"></p>
   </div>
+
+  <div id="signup-section" style="display:none;">
+    <h3>Create a New Account</h3>
+    <button onclick="signUpWithGoogle()">Sign Up with Google</button>
+
+    <p>Or sign up manually:</p>
+    <form id="signup-form">
+      <input type="email" id="signup-email" placeholder="Email" required />
+      <input type="password" id="signup-password" placeholder="Password" required />
+      <input type="text" id="signup-first-name" placeholder="First Name" required />
+      <input type="text" id="signup-last-name" placeholder="Last Name" required />
+      <select id="signup-batch" required>
+        <option value="">Select Batch</option>
+        <option>Adults</option>
+        <option>Intermediate</option>
+        <option>Level 2</option>
+        <option>Level 1</option>
+        <option>Level 0</option>
+      </select>
+      <button type="submit">Create Account</button>
+    </form>
+    <p id="signup-message" style="color: green;"></p>
+  </div>
+
+  <div id="student-dashboard" style="display:none;">
+    <h3>Welcome, student!</h3>
+    <button onclick="showEditProfile()">Edit Profile</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div id="edit-profile" style="display:none;">
+    <h3>Edit Profile</h3>
+    <form id="profile-form">
+      <input type="text" id="first-name" placeholder="First Name" required />
+      <input type="text" id="last-name" placeholder="Last Name" required />
+      <select id="batch" required>
+        <option value="">Select Batch</option>
+        <option>Adults</option>
+        <option>Intermediate</option>
+        <option>Level 2</option>
+        <option>Level 1</option>
+        <option>Level 0</option>
+      </select>
+      <button type="submit">Save</button>
+    </form>
+    <p id="save-message" style="color: green;"></p>
+  </div>
 </section>
 
 <section id="admin-dashboard" style="display:none;">
-  <h2>Welcome, Admin</h2>
+  <h2>Welcome Admin!</h2>
   <div>
     <button onclick="showAdminTab('students')">Students</button>
     <button onclick="showAdminTab('progress')">Student Progress</button>
   </div>
-
-  <div id="admin-students-tab" style="display:none; margin-top: 1rem;">
-    <h3>All Students</h3>
-    <table id="students-table" border="1" style="border-collapse: collapse;">
-      <thead id="students-table-head"></thead>
-      <tbody id="students-table-body"></tbody>
-    </table>
+  <div id="admin-students" class="admin-tab">
+    <h3>Student List</h3>
+    <div id="student-table-container"></div>
   </div>
-
-  <div id="admin-progress-tab" style="display:none; margin-top: 1rem;">
-    <h3>Student Progress (Coming Soon)</h3>
+  <div id="admin-progress" class="admin-tab" style="display:none;">
+    <h3>Student Progress</h3>
+    <p>Coming soon...</p>
   </div>
 </section>
 
@@ -80,7 +123,7 @@
   <p>Coming soon...</p>
 </section>
 
-<section id="progress">
+<section id="student-progress">
   <h2>Progress Section</h2>
   <p>Coming soon...</p>
 </section>
@@ -94,5 +137,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-firestore-compat.js"></script>
 <script src="app.js"></script>
+
 </body>
 </html>
