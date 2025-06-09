@@ -1,81 +1,78 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    background: #fafafa;
-    color: #333;
+    padding: 0;
+    background: #f5f5f5;
 }
 
 header {
-    background-color: #0066cc;
+    background-color: #80296B;
     color: white;
-    padding: 15px 20px;
     text-align: center;
-}
-
-nav {
-    background: #004999;
-    padding: 10px 20px;
-    display: flex;
-    gap: 10px;
-}
-
-nav button {
-    background: #0080ff;
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    cursor: pointer;
-    border-radius: 4px;
-    font-weight: bold;
-    transition: background-color 0.3s;
-}
-
-nav button:hover {
-    background-color: #005bb5;
-}
-
-section {
-    margin: 20px auto;
-    max-width: 600px;
-    background: white;
-    border-radius: 6px;
-    box-shadow: 0 0 10px #ddd;
     padding: 20px;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"] {
-    width: 100%;
+nav {
+    background-color: #f8f8f8;
     padding: 10px;
-    margin: 8px 0 16px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    border-bottom: 1px solid #ddd;
 }
 
-button[type="submit"],
-button {
+nav button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #80296B;
+    color: white;
+    border-radius: 5px;
     cursor: pointer;
 }
 
-.message {
-    color: red;
-    margin: 10px 0 0;
+nav button:hover {
+    background-color: #a63f8d;
+}
+
+section {
+    padding: 20px;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    max-width: 400px;
+    margin-top: 10px;
+}
+
+input, button {
+    padding: 10px;
+    font-size: 16px;
+}
+
+button[type="submit"], button:not([onclick*="showSection"]) {
+    background-color: #80296B;
+    color: white;
+    border: none;
+    border-radius: 5px;
+}
+
+button[type="submit"]:hover, button:not([onclick*="showSection"]):hover {
+    background-color: #a63f8d;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
+    margin-top: 20px;
+}
+
+table, th, td {
+    border: 1px solid #ccc;
 }
 
 th, td {
-    border: 1px solid #ccc;
     padding: 8px;
     text-align: left;
-}
-
-th {
-    background: #eee;
 }
