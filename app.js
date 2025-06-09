@@ -80,19 +80,34 @@ function checkUserRole(uid) {
   db.collection("students").doc(uid).get().then(doc => {
     if (!doc.exists) return;
     const data = doc.data();
+
+    // Hide all nav buttons first
+    document.querySelectorAll("nav button").forEach(btn => btn.style.display = "none");
+
     if (data.role === "admin") {
-      document.getElementById("admin-dashboard").style.display = "block";
+      // Admin-specific UI
       document.getElementById("students-tab").style.display = "inline-block";
       document.getElementById("progress-tab").style.display = "inline-block";
+      document.getElementById("fee-nav").style.display = "inline-block";
+      document.querySelector("nav button[onclick=\"showSection('home')\"]").style.display = "inline-block";
+      document.getElementById("logout-nav").style.display = "inline-block";
+
+      // Show admin dashboard with welcome
+      showSection("admin-dashboard");
     } else {
+      // Student-specific UI
       document.getElementById("student-dashboard").style.display = "block";
       document.getElementById("edit-nav").style.display = "inline-block";
       document.getElementById("fee-nav").style.display = "inline-block";
+      document.querySelector("nav button[onclick=\"showSection('home')\"]").style.display = "inline-block";
+      document.getElementById("logout-nav").style.display = "inline-block";
+      document.querySelector("nav button[onclick=\"showSection('communications')\"]").style.display = "inline-block";
+
+      showSection("home");
     }
-    document.getElementById("logout-nav").style.display = "inline-block";
-    showSection("home");
   });
 }
+
 
 function logout() {
   auth.signOut().then(() => location.reload());

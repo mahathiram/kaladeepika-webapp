@@ -137,6 +137,12 @@ button:hover {
     color: #28a745;
 }
 
+#admin-welcome {
+    font-size: 1.5em;
+    color: #00704A;
+    margin-bottom: 1em;
+}
+
 table {
     width: 100%;
     border-collapse: collapse;
