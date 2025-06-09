@@ -7,14 +7,12 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
 <header>
   <h1>Kala Deepika Dance Academy</h1>
 </header>
 
 <nav>
   <button onclick="showSection('home')">Home</button>
-
   <div class="dropdown">
     <button class="dropbtn">Students</button>
     <div class="dropdown-content">
@@ -22,14 +20,12 @@
       <a href="#" onclick="showStudentOption('existing')">Existing Students</a>
     </div>
   </div>
-
   <button id="fee-nav" style="display:none;" onclick="showSection('fee')">Fee</button>
   <button id="progress-nav" style="display:none;" onclick="showSection('progress')">Progress</button>
   <button id="edit-nav" style="display:none;" onclick="showEditProfile()">Edit Profile</button>
   <button id="logout-nav" style="display:none;" onclick="logout()">Logout</button>
   <button onclick="showSection('communications')">Communications</button>
 </nav>
-
 
 <section id="home" class="visible">
   <h2>Welcome!</h2>
@@ -45,37 +41,38 @@
   </div>
 
   <div id="existing-student" style="display:none;">
-    <h3>Existing Student Login</h3>
-    <form id="login-form">
-      <input type="email" id="login-email" placeholder="Email" required />
-      <input type="password" id="login-password" placeholder="Password" required />
-      <button type="submit">Login</button>
-    </form>
-    <p id="login-message" style="color: red;"></p>
+    <h3>Login or Create Account</h3>
+    <div class="auth-options">
+      <form id="login-form">
+        <input type="email" id="email" placeholder="Email" required />
+        <input type="password" id="password" placeholder="Password" required />
+        <button type="submit">Login</button>
+        <button type="button" onclick="resetPassword()">Forgot Password?</button>
+        <p id="login-message" style="color:red;"></p>
+      </form>
 
-    <hr />
+      <hr/>
 
-    <h3>Create Account</h3>
+      <button onclick="googleSignIn()">Sign in with Google</button>
 
-    <button id="google-signin-btn">Sign in with Google</button>
-
-    <h4>Or sign up with email</h4>
-    <form id="signup-form">
-      <input type="email" id="signup-email" placeholder="Email" required />
-      <input type="password" id="signup-password" placeholder="Password" required minlength="6" />
-      <input type="text" id="signup-first-name" placeholder="First Name" required />
-      <input type="text" id="signup-last-name" placeholder="Last Name" required />
-      <select id="signup-batch" required>
-        <option value="">Select Batch</option>
-        <option>Adults</option>
-        <option>Intermediate</option>
-        <option>Level 2</option>
-        <option>Level 1</option>
-        <option>Level 0</option>
-      </select>
-      <button type="submit">Create Account</button>
-    </form>
-    <p id="signup-message" style="color: red;"></p>
+      <h4>Create New Account</h4>
+      <form id="signup-form">
+        <input type="text" id="signup-first-name" placeholder="First Name" required />
+        <input type="text" id="signup-last-name" placeholder="Last Name" required />
+        <select id="signup-batch" required>
+          <option value="">Select Batch</option>
+          <option>Adults</option>
+          <option>Intermediate</option>
+          <option>Level 2</option>
+          <option>Level 1</option>
+          <option>Level 0</option>
+        </select>
+        <input type="email" id="signup-email" placeholder="Email" required />
+        <input type="password" id="signup-password" placeholder="Password" required />
+        <button type="submit">Create Account</button>
+        <p id="signup-message" style="color:green;"></p>
+      </form>
+    </div>
   </div>
 
   <div id="student-dashboard" style="display:none;">
@@ -103,48 +100,13 @@
   </div>
 </section>
 
-<section id="fee">
-  <h2>Fee Section</h2>
-  <p>Coming soon...</p>
-</section>
-
-<section id="progress">
-  <h2>Progress Section</h2>
-  <p>Coming soon...</p>
-</section>
-
-<section id="communications">
-  <h2>Communications</h2>
-  <p>Coming soon...</p>
-</section>
+<section id="fee"><h2>Fee Section</h2><p>Coming soon...</p></section>
+<section id="progress"><h2>Progress Section</h2><p>Coming soon...</p></section>
+<section id="communications"><h2>Communications</h2><p>Coming soon...</p></section>
 
 <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-firestore-compat.js"></script>
 <script src="app.js"></script>
-
-<script>
-  function showSection(sectionId) {
-    document.querySelectorAll("section").forEach(section => {
-      section.classList.remove("visible");
-    });
-    document.getElementById(sectionId).classList.add("visible");
-  }
-
-  function showStudentOption(type) {
-    showSection('students');
-    document.getElementById("new-student").style.display = "none";
-    document.getElementById("existing-student").style.display = "none";
-    document.getElementById("student-dashboard").style.display = "none";
-    document.getElementById("edit-profile").style.display = "none";
-
-    if (type === "new") {
-      document.getElementById("new-student").style.display = "block";
-    } else if (type === "existing") {
-      document.getElementById("existing-student").style.display = "block";
-    }
-  }
-</script>
-
 </body>
 </html>
