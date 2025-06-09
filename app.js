@@ -10,30 +10,52 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// UI Section Switching
+// Show only one section at a time
 function showSection(id) {
-  document.querySelectorAll("section").forEach(s => s.style.display = "none");
-  document.getElementById(id).style.display = "block";
+  document.querySelectorAll("section").forEach(s => (s.style.display = "none"));
+  const el = document.getElementById(id);
+  if (el) el.style.display = "block";
+
+  // Reset messages
+  clearMessages();
+
+  // Hide all nav buttons except home and logout or based on role later
+  if (id === "home") {
+    document.getElementById("students-tab").style.display = "none";
+    document.getElementById("progress-tab").style.display = "none";
+    document.getElementById("fee-nav").style.display = "none";
+    document.getElementById("edit-nav").style.display = "none";
+    document.getElementById("logout-nav").style.display = "none";
+  }
 }
 
-// Show student tab options
+function clearMessages() {
+  ["signup-message", "login-message", "save-message"].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = "";
+  });
+}
+
 function showStudentOption(option) {
-  document.getElementById("new-student").style.display = option === 'new' ? 'block' : 'none';
-  document.getElementById("existing-student").style.display = option === 'existing' ? 'block' : 'none';
-  document.getElementById("signup-section").style.display = 'block';
+  if (option === "new") {
+    showSection("signup-section");
+  } else if (option === "existing") {
+    showSection("existing-student");
+  }
 }
 
-// Handle Signup
-document.getElementById("signup-form").addEventListener("submit", async (e) => {
+// Sign up new user
+document.getElementById("signup-form").addEventListener("submit", async e => {
   e.preventDefault();
-  const email = document.getElementById("signup-email").value;
+  const firstName = document.getElementById("signup-first-name").value.trim();
+  const lastName = document.getElementById("signup-last-name").value.trim();
+  const batch = document.getElementById("signup-batch").value.trim();
+  const email = document.getElementById("signup-email").value.trim();
   const password = document.getElementById("signup-password").value;
-  const firstName = document.getElementById("signup-first-name").value;
-  const lastName = document.getElementById("signup-last-name").value;
-  const batch = document.getElementById("signup-batch").value;
 
   try {
     const cred = await auth.createUserWithEmailAndPassword(email, password);
@@ -41,16 +63,16 @@ document.getElementById("signup-form").addEventListener("submit", async (e) => {
       firstName,
       lastName,
       batch,
-      role: 'student',
-      email
+      email,
+      role: "student"
     });
-    document.getElementById("signup-message").innerText = "Account created successfully!";
+    document.getElementById("signup-message").textContent = "Account created successfully! Logging you in...";
   } catch (err) {
-    document.getElementById("signup-message").innerText = err.message;
+    document.getElementById("signup-message").textContent = err.message;
   }
 });
 
-// Google Signup
+// Google Sign In / Sign Up
 async function signUpWithGoogle() {
   const provider = new firebase.auth.GoogleAuthProvider();
   try {
@@ -59,10 +81,10 @@ async function signUpWithGoogle() {
     if (!userDoc.exists) {
       await db.collection("students").doc(result.user.uid).set({
         firstName: result.user.displayName.split(" ")[0],
-        lastName: result.user.displayName.split(" ")[1] || '',
-        batch: '',
-        role: 'student',
-        email: result.user.email
+        lastName: result.user.displayName.split(" ")[1] || "",
+        batch: "",
+        email: result.user.email,
+        role: "student"
       });
     }
   } catch (err) {
@@ -70,133 +92,135 @@ async function signUpWithGoogle() {
   }
 }
 
-// Login
-document.getElementById("login-form").addEventListener("submit", async (e) => {
+// Login existing user
+document.getElementById("login-form").addEventListener("submit", async e => {
   e.preventDefault();
-  const email = document.getElementById("email").value;
+  const email = document.getElementById("email").value.trim();
   const password = document.getElementById("password").value;
 
   try {
     await auth.signInWithEmailAndPassword(email, password);
   } catch (err) {
-    document.getElementById("login-message").innerText = err.message;
+    document.getElementById("login-message").textContent = err.message;
   }
 });
 
-// Logout
+// Logout user
 function logout() {
   auth.signOut();
+  showSection("home");
 }
 
-// On Auth State Changed
-auth.onAuthStateChanged(async (user) => {
+// Listen for auth state changes
+auth.onAuthStateChanged(async user => {
   if (user) {
     const doc = await db.collection("students").doc(user.uid).get();
+    if (!doc.exists) {
+      alert("User profile not found. Please contact admin.");
+      auth.signOut();
+      showSection("home");
+      return;
+    }
     const data = doc.data();
-    if (!data) return;
 
+    if (data.role === "admin") {
+      document.getElementById("students-tab").style.display = "inline-block";
+      document.getElementById("progress-tab").style.display = "inline-block";
+      document.getElementById("fee-nav").style.display = "inline-block";
+      document.getElementById("edit-nav").style.display = "none";
+      document.getElementById("logout-nav").style.display = "inline-block";
+      showSection("admin-dashboard");
+      showAdminTab("students");
+    } else {
+      document.getElementById("students-tab").style.display = "none";
+      document.getElementById("progress-tab").style.display = "none";
+      document.getElementById("fee-nav").style.display = "none";
+      document.getElementById("edit-nav").style.display = "inline-block";
+      document.getElementById("logout-nav").style.display = "inline-block";
+      showSection("student-dashboard");
+    }
+  } else {
+    // No user logged in
     document.getElementById("students-tab").style.display = "none";
     document.getElementById("progress-tab").style.display = "none";
     document.getElementById("fee-nav").style.display = "none";
     document.getElementById("edit-nav").style.display = "none";
-    document.getElementById("logout-nav").style.display = "block";
-
-    if (data.role === 'admin') {
-      document.getElementById("students-tab").style.display = "inline-block";
-      document.getElementById("progress-tab").style.display = "inline-block";
-      document.getElementById("fee-nav").style.display = "inline-block";
-      showSection('admin-dashboard');
-    } else {
-      document.getElementById("edit-nav").style.display = "inline-block";
-      document.getElementById("student-dashboard").style.display = "block";
-      showSection('students');
-    }
-  } else {
-    showSection('home');
+    document.getElementById("logout-nav").style.display = "none";
+    showSection("home");
   }
 });
 
-// Show Edit Profile
+// Show Edit Profile section and populate fields
 function showEditProfile() {
-  document.getElementById("edit-profile").style.display = "block";
-  db.collection("students").doc(auth.currentUser.uid).get().then((doc) => {
-    const data = doc.data();
-    document.getElementById("first-name").value = data.firstName;
-    document.getElementById("last-name").value = data.lastName;
-    document.getElementById("batch").value = data.batch;
-  });
+  showSection("edit-profile");
+  const uid = auth.currentUser.uid;
+  db.collection("students")
+    .doc(uid)
+    .get()
+    .then(doc => {
+      if (doc.exists) {
+        const data = doc.data();
+        document.getElementById("first-name").value = data.firstName || "";
+        document.getElementById("last-name").value = data.lastName || "";
+        document.getElementById("batch").value = data.batch || "";
+      }
+    });
 }
 
-// Save profile
-document.getElementById("profile-form").addEventListener("submit", async (e) => {
+// Save profile edits
+document.getElementById("profile-form").addEventListener("submit", async e => {
   e.preventDefault();
-  const firstName = document.getElementById("first-name").value;
-  const lastName = document.getElementById("last-name").value;
-  const batch = document.getElementById("batch").value;
+  const uid = auth.currentUser.uid;
+  const firstName = document.getElementById("first-name").value.trim();
+  const lastName = document.getElementById("last-name").value.trim();
+  const batch = document.getElementById("batch").value.trim();
 
-  await db.collection("students").doc(auth.currentUser.uid).update({
-    firstName, lastName, batch
-  });
-
-  document.getElementById("save-message").innerText = "Profile saved!";
+  try {
+    await db.collection("students").doc(uid).update({ firstName, lastName, batch });
+    document.getElementById("save-message").textContent = "Profile saved successfully!";
+  } catch (err) {
+    document.getElementById("save-message").textContent = err.message;
+  }
 });
 
-// Admin: Show student list
+// Admin tabs switching
 function showAdminTab(tab) {
-  document.querySelectorAll(".admin-tab").forEach(t => t.style.display = "none");
-  if (tab === 'students') {
+  document.querySelectorAll(".admin-tab").forEach(el => (el.style.display = "none"));
+  if (tab === "students") {
     document.getElementById("admin-students").style.display = "block";
     loadStudentList();
-  } else if (tab === 'progress') {
+  } else if (tab === "progress") {
     document.getElementById("admin-progress").style.display = "block";
   }
 }
 
-function getFutureMonths(numMonths = 18) {
-  const months = [];
-  const now = new Date();
-  for (let i = 0; i < numMonths; i++) {
-    const date = new Date(now.getFullYear(), now.getMonth() + i);
-    const label = date.toLocaleString('default', { month: 'short', year: 'numeric' });
-    months.push(label);
-  }
-  return months;
-}
-
+// Load student list for admin
 function loadStudentList() {
-  const tableContainer = document.getElementById("student-table-container");
-  if (!tableContainer) return;
-
-  db.collection("students").where("role", "==", "student").get().then((querySnapshot) => {
-    let html = `<table border="1"><thead><tr>
-      <th>#</th><th>First Name</th><th>Last Name</th><th>Batch</th>`;
-
-    const months = getFutureMonths();
-    months.forEach(month => {
-      html += `<th>${month}</th>`;
-    });
-
-    html += `</tr></thead><tbody>`;
-
-    let index = 1;
-    querySnapshot.forEach(doc => {
-      const data = doc.data();
-      html += `<tr>
-        <td>${index++}</td>
-        <td>${data.firstName}</td>
-        <td>${data.lastName}</td>
-        <td>${data.batch}</td>`;
-
-      months.forEach(_ => {
-        html += `<td></td>`;
+  const container = document.getElementById("student-table-container");
+  if (!container) return;
+  db.collection("students")
+    .where("role", "==", "student")
+    .get()
+    .then(snapshot => {
+      let html = `<table border="1" cellspacing="0" cellpadding="5" style="border-collapse: collapse; width: 100%;">
+        <thead style="background-color: #eee;">
+          <tr><th>#</th><th>First Name</th><th>Last Name</th><th>Batch</th></tr>
+        </thead>
+        <tbody>`;
+      let count = 1;
+      snapshot.forEach(doc => {
+        const d = doc.data();
+        html += `<tr>
+          <td>${count++}</td>
+          <td>${d.firstName || ""}</td>
+          <td>${d.lastName || ""}</td>
+          <td>${d.batch || ""}</td>
+        </tr>`;
       });
-
-      html += `</tr>`;
+      html += "</tbody></table>";
+      container.innerHTML = html;
     });
-
-    html += `</tbody></table>`;
-    tableContainer.innerHTML = html;
-  });
 }
+
 
 

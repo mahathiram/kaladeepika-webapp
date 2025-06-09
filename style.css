@@ -1,84 +1,67 @@
 body {
     font-family: Arial, sans-serif;
     margin: 0;
-    padding: 0;
+    background: #fafafa;
+    color: #333;
 }
 
 header {
-    background-color: #8b0000;
+    background-color: #0066cc;
     color: white;
-    padding: 15px;
+    padding: 15px 20px;
     text-align: center;
 }
 
 nav {
-    background-color: #f4f4f4;
-    padding: 10px;
+    background: #004999;
+    padding: 10px 20px;
     display: flex;
-    flex-wrap: wrap;
     gap: 10px;
 }
 
-nav button, .dropdown .dropbtn {
-    padding: 10px;
-    background-color: #8b0000;
+nav button {
+    background: #0080ff;
     color: white;
     border: none;
+    padding: 8px 15px;
     cursor: pointer;
+    border-radius: 4px;
+    font-weight: bold;
+    transition: background-color 0.3s;
 }
 
-nav button:hover, .dropdown:hover .dropbtn {
-    background-color: #a52a2a;
+nav button:hover {
+    background-color: #005bb5;
 }
 
 section {
-    display: none;
+    margin: 20px auto;
+    max-width: 600px;
+    background: white;
+    border-radius: 6px;
+    box-shadow: 0 0 10px #ddd;
     padding: 20px;
 }
 
-section.visible {
-    display: block;
-}
-
-input, select {
-    display: block;
-    margin-bottom: 10px;
-    padding: 8px;
+input[type="text"],
+input[type="email"],
+input[type="password"] {
     width: 100%;
-    max-width: 300px;
+    padding: 10px;
+    margin: 8px 0 16px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
+button[type="submit"],
 button {
-    padding: 8px 16px;
+    cursor: pointer;
 }
 
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    z-index: 1;
-    background-color: white;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
-}
-
-.dropdown-content a {
-    color: black;
-    padding: 8px 12px;
-    display: block;
-    text-decoration: none;
-}
-
-.dropdown-content a:hover {
-    background-color: #ddd;
-}
-
-.dropdown:hover .dropdown-content {
-    display: block;
+.message {
+    color: red;
+    margin: 10px 0 0;
 }
 
 table {
@@ -88,7 +71,11 @@ table {
 }
 
 th, td {
-    border: 1px solid #aaa;
+    border: 1px solid #ccc;
     padding: 8px;
     text-align: left;
+}
+
+th {
+    background: #eee;
 }
