@@ -35,10 +35,9 @@
 
 <section id="students">
   <div id="new-student" style="display:none;">
-    <h3>Welcome to Kala Deepika Dance Academy!</h3>
-    <p>Kuchipudi Dance lessons for both adults and kids (5+ years)</p>
-    <a href="https://docs.google.com/forms/d/e/1FAIpQLSc73VlKb8-UGywATqaXgtNd_dwdJ4ukGZa8hRnM_vG91NcYnA/viewform" target="_blank">
-      <button>Enroll Here</button>
+    <h3>To enroll for beginner classes - Kids (5+ yrs) and Adults</h3>
+    <a href="https://docs.google.com/forms/d/1NIkdapshL1aWwwqGsOBe8dT74IBHT-RJkqERRsYGKuU/viewform" target="_blank">
+      <button>Click Here</button>
     </a>
   </div>
 
@@ -96,5 +95,29 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-auth.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-firestore.js"></script>
 <script src="app.js"></script>
+
+<script>
+  function showSection(sectionId) {
+    document.querySelectorAll("section").forEach(section => {
+      section.classList.remove("visible");
+    });
+    document.getElementById(sectionId).classList.add("visible");
+  }
+
+  function showStudentOption(type) {
+    showSection('students');
+    document.getElementById("new-student").style.display = "none";
+    document.getElementById("existing-student").style.display = "none";
+    document.getElementById("student-dashboard").style.display = "none";
+    document.getElementById("edit-profile").style.display = "none";
+
+    if (type === "new") {
+      document.getElementById("new-student").style.display = "block";
+    } else if (type === "existing") {
+      document.getElementById("existing-student").style.display = "block";
+    }
+  }
+</script>
+
 </body>
 </html>
