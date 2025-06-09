@@ -76,6 +76,46 @@ document.getElementById("login-form").addEventListener("submit", e => {
     });
 });
 
+function loadAdminSummaryTable() {
+  google.charts.load('current', { packages: ['corechart', 'table'] });
+  google.charts.setOnLoadCallback(drawSummaryTable);
+
+  function drawSummaryTable() {
+    const query = new google.visualization.Query(
+      'https://docs.google.com/spreadsheets/d/1T0V-PdffEzfdMgpjey9A5fZxr-EJ-xvHSH9gPNptuKM/gviz/tq?gid=750748256&range=K3:L5'
+    );
+    query.send(response => {
+      const data = response.getDataTable();
+
+      // Clear previous content
+      const thead = document.querySelector("#summary-table thead");
+      const tbody = document.querySelector("#summary-table tbody");
+      thead.innerHTML = "";
+      tbody.innerHTML = "";
+
+      // Create header
+      const headerRow = document.createElement("tr");
+      for (let i = 0; i < data.getNumberOfColumns(); i++) {
+        const th = document.createElement("th");
+        th.textContent = data.getColumnLabel(i);
+        headerRow.appendChild(th);
+      }
+      thead.appendChild(headerRow);
+
+      // Create rows
+      for (let i = 0; i < data.getNumberOfRows(); i++) {
+        const row = document.createElement("tr");
+        for (let j = 0; j < data.getNumberOfColumns(); j++) {
+          const td = document.createElement("td");
+          td.textContent = data.getValue(i, j);
+          row.appendChild(td);
+        }
+        tbody.appendChild(row);
+      }
+    });
+  }
+}
+
 function checkUserRole(uid) {
   db.collection("students").doc(uid).get().then(doc => {
     if (!doc.exists) return;
@@ -94,6 +134,7 @@ function checkUserRole(uid) {
 
       // Show admin dashboard with welcome
       showSection("admin-dashboard");
+      loadAdminSummaryTable();
     } else {
       // Student-specific UI
       document.getElementById("student-dashboard").style.display = "block";

@@ -104,19 +104,15 @@
 
 <section id="admin-dashboard" style="display:none;">
   <h2 id="admin-welcome">Welcome Admin!</h2>
-  <div>
-    <button onclick="showAdminTab('students')">Students</button>
-    <button onclick="showAdminTab('progress')">Student Progress</button>
-  </div>
-  <div id="admin-students" class="admin-tab">
-    <h3>Student List</h3>
-    <div id="student-table-container"></div>
-  </div>
-  <div id="admin-progress" class="admin-tab" style="display:none;">
-    <h3>Student Progress</h3>
-    <p>Coming soon...</p>
+  <div id="admin-summary">
+    <h3>Quick Summary</h3>
+    <table id="summary-table" border="1" style="border-collapse: collapse; margin-top: 10px;">
+      <thead></thead>
+      <tbody></tbody>
+    </table>
   </div>
 </section>
+
 
 
 <section id="fee">
@@ -137,6 +133,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-firestore-compat.js"></script>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script src="app.js"></script>
 
 </body>
