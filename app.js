@@ -33,25 +33,34 @@ auth.onAuthStateChanged(user => {
     db.collection('students').doc(user.uid).get().then(doc => {
       if (doc.exists) {
         const data = doc.data();
+
+        // Hide all sections
+        document.querySelectorAll('section').forEach(sec => sec.classList.remove('visible'));
+
         if (data.role === 'admin') {
-          showSection('admin-dashboard');
+          // Admin view setup
+          document.getElementById('admin-dashboard').classList.add('visible');
           document.getElementById('students-tab').style.display = 'inline-block';
           document.getElementById('progress-tab').style.display = 'inline-block';
           document.getElementById('edit-nav').style.display = 'none';
           document.getElementById('fee-nav').style.display = 'none';
           document.getElementById('logout-nav').style.display = 'inline-block';
+
           loadStudentTable();
         } else {
+          // Student view setup
           document.getElementById('student-dashboard').style.display = 'block';
           document.getElementById('edit-nav').style.display = 'inline-block';
           document.getElementById('fee-nav').style.display = 'inline-block';
           document.getElementById('logout-nav').style.display = 'inline-block';
-          showSection('students');
+
+          document.getElementById('students').classList.add('visible');
         }
       }
     });
   }
 });
+
 
 document.getElementById('login-form').addEventListener('submit', (e) => {
   e.preventDefault();
