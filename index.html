@@ -1,90 +1,98 @@
+<!-- Updated index.html with Admin Dashboard -->
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Kala Deepika Dance Academy</title>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Kala Deepika Dance Academy</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
 </head>
 <body>
 <header>
-  <h1>Welcome to Kala Deepika Dance Academy</h1>
+  <h1>Kala Deepika Dance Academy</h1>
 </header>
 
 <nav>
   <button onclick="showSection('home')">Home</button>
-  <button onclick="showStudentOption('new')">New Students</button>
-  <button onclick="showStudentOption('existing')">Existing Students</button>
-  <button id="edit-nav" onclick="showEditProfile()">Edit Profile</button>
-  <button id="students-tab" onclick="showAdminTab('students')">Students</button>
-  <button id="progress-tab" onclick="showAdminTab('progress')">Student Progress</button>
-  <button id="fee-nav" onclick="showAdminTab('fees')">Fee Status</button>
-  <button id="logout-nav" onclick="logout()">Logout</button>
+
+  <div class="dropdown">
+    <button class="dropbtn">Students</button>
+    <div class="dropdown-content">
+      <a href="#" onclick="showStudentOption('new')">New Students</a>
+      <a href="#" onclick="showStudentOption('existing')">Existing Students</a>
+    </div>
+  </div>
+
+  <button id="fee-nav" style="display:none;" onclick="showSection('fee')">Fee</button>
+  <button id="progress-nav" style="display:none;" onclick="showSection('progress')">Progress</button>
+  <button id="admin-nav" style="display:none;" onclick="showSection('admin-dashboard')">Admin Dashboard</button>
+  <button id="edit-nav" style="display:none;" onclick="showEditProfile()">Edit Profile</button>
+  <button id="logout-nav" style="display:none;" onclick="logout()">Logout</button>
+  <button onclick="showSection('communications')">Communications</button>
 </nav>
 
-<section id="home">
-  <p>Please select an option from above to get started.</p>
+<section id="home" class="visible">
+  <h2>Welcome!</h2>
+  <p>Explore classical Kuchipudi dance lessons for all ages.</p>
 </section>
 
-<section id="students" style="display: none;">
-  <div id="new-student" style="display: none;">
-    <h2>New Student Signup</h2>
-    <button onclick="signUpWithGoogle()">Sign Up with Google</button>
-    <form id="signup-form">
-      <input id="signup-first-name" placeholder="First Name" required />
-      <input id="signup-last-name" placeholder="Last Name" required />
-      <input id="signup-batch" placeholder="Batch" required />
-      <input id="signup-email" type="email" placeholder="Email" required />
-      <input id="signup-password" type="password" placeholder="Password" required />
-      <button type="submit">Create Account</button>
-    </form>
-    <p id="signup-message"></p>
+<section id="students">
+  <div id="new-student" style="display:none;">
+    <h3>To enroll for beginner classes - Kids (5+ yrs) and Adults</h3>
+    <a href="https://docs.google.com/forms/d/1NIkdapshL1aWwwqGsOBe8dT74IBHT-RJkqERRsYGKuU/viewform" target="_blank">
+      <button>Click Here</button>
+    </a>
   </div>
 
-  <div id="existing-student" style="display: none;">
-    <h2>Student Login</h2>
+  <div id="existing-student" style="display:none;">
+    <h3>Existing Student Login</h3>
     <form id="login-form">
-      <input id="email" type="email" placeholder="Email" required />
-      <input id="password" type="password" placeholder="Password" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
       <button type="submit">Login</button>
     </form>
-    <p id="login-message"></p>
-  </div>
-
-  <div id="edit-profile" style="display: none;">
-    <h2>Edit Profile</h2>
-    <form id="profile-form">
-      <input id="first-name" placeholder="First Name" />
-      <input id="last-name" placeholder="Last Name" />
-      <input id="batch" placeholder="Batch" />
-      <button type="submit">Save</button>
-    </form>
-    <p id="save-message"></p>
+    <p id="login-message" style="color: red;"></p>
   </div>
 </section>
 
-<section id="student-dashboard" style="display: none;">
-  <h2>Welcome, Student!</h2>
-  <p>This is your dashboard.</p>
+<section id="admin-dashboard" style="display:none;">
+  <h2>Welcome, Admin</h2>
+  <div>
+    <button onclick="showAdminTab('students')">Students</button>
+    <button onclick="showAdminTab('progress')">Student Progress</button>
+  </div>
+
+  <div id="admin-students-tab" style="display:none; margin-top: 1rem;">
+    <h3>All Students</h3>
+    <table id="students-table" border="1" style="border-collapse: collapse;">
+      <thead id="students-table-head"></thead>
+      <tbody id="students-table-body"></tbody>
+    </table>
+  </div>
+
+  <div id="admin-progress-tab" style="display:none; margin-top: 1rem;">
+    <h3>Student Progress (Coming Soon)</h3>
+  </div>
 </section>
 
-<section id="admin-dashboard" style="display: none;">
-  <h2>Welcome, Admin!</h2>
-  <div id="admin-students" class="admin-tab" style="display: none;">
-    <h3>Student List</h3>
-    <div id="student-table-container"></div>
-  </div>
-  <div id="admin-progress" class="admin-tab" style="display: none;">
-    <h3>Progress Tab (Coming Soon)</h3>
-  </div>
-  <div id="admin-fees" class="admin-tab" style="display: none;">
-    <h3>Fees Tab (Coming Soon)</h3>
-  </div>
+<section id="fee">
+  <h2>Fee Section</h2>
+  <p>Coming soon...</p>
 </section>
 
+<section id="progress">
+  <h2>Progress Section</h2>
+  <p>Coming soon...</p>
+</section>
+
+<section id="communications">
+  <h2>Communications</h2>
+  <p>Coming soon...</p>
+</section>
+
+<script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-firestore-compat.js"></script>
 <script src="app.js"></script>
 </body>
 </html>
