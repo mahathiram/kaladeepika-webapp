@@ -2,24 +2,20 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Kala Deepika Dance Academy</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 </head>
 <body>
+
+<header>
+  <h1>Kala Deepika Dance Academy</h1>
+</header>
+
 <nav>
-  <button id="home" onclick="showSection('home')">Home</button>
+  <button onclick="showSection('home')">Home</button>
 
-
-  <button id="students-tab" style="display:none;">Students</button>
-  <button id="progress-tab" style="display:none;">Student Progress</button>
-  <button id="fee-nav" style="display:none;">Fee Status</button>
-  <button id="logout-nav" style="display:none;" onclick="logout()">Logout</button>
-
-  <div class="dropdown" id="student-dropdown" style="display:none;">
+  <div class="dropdown">
     <button class="dropbtn">Students</button>
     <div class="dropdown-content">
       <a href="#" onclick="showStudentOption('new')">New Students</a>
@@ -27,69 +23,120 @@
     </div>
   </div>
 
+  <button id="students-tab" style="display:none;" onclick="showSection('admin-dashboard')">Students</button>
+  <button id="progress-tab" style="display:none;" onclick="showSection('student-progress')">Student Progress</button>
+  <button id="fee-nav" style="display:none;" onclick="showSection('fee')">Fee</button>
   <button id="edit-nav" style="display:none;" onclick="showEditProfile()">Edit Profile</button>
-
-  <button id="login-nav" onclick="showSection('login-section')">Login</button>
-  <button id="signup-nav" onclick="showSection('signup-section')">Create Account</button>
+  <button id="logout-nav" style="display:none;" onclick="logout()">Logout</button>
+  <button onclick="showSection('communications')">Communications</button>
 </nav>
 
-<!-- Sections -->
-
 <section id="home" class="visible">
-  <h1>Welcome to Kala Deepika Dance Academy</h1>
+  <h2>Welcome!</h2>
+  <p>Explore classical Kuchipudi dance lessons for all ages.</p>
+</section>
+
+<section id="students">
+  <div id="new-student" style="display:none;">
+    <h3>To enroll for beginner classes - Kids (5+ yrs) and Adults</h3>
+    <a href="https://docs.google.com/forms/d/1NIkdapshL1aWwwqGsOBe8dT74IBHT-RJkqERRsYGKuU/viewform" target="_blank">
+      <button>Click Here</button>
+    </a>
+  </div>
+
+  <div id="existing-student" style="display:none;">
+    <h3>Existing Student Login</h3>
+    <form id="login-form">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button type="submit">Login</button>
+    </form>
+    <p id="login-message" style="color: red;"></p>
+  </div>
+
+  <div id="signup-section" style="display:none;">
+    <h3>Create a New Account</h3>
+    <button onclick="signUpWithGoogle()">Sign Up with Google</button>
+
+    <p>Or sign up manually:</p>
+    <form id="signup-form">
+      <input type="email" id="signup-email" placeholder="Email" required />
+      <input type="password" id="signup-password" placeholder="Password" required />
+      <input type="text" id="signup-first-name" placeholder="First Name" required />
+      <input type="text" id="signup-last-name" placeholder="Last Name" required />
+      <select id="signup-batch" required>
+        <option value="">Select Batch</option>
+        <option>Adults</option>
+        <option>Intermediate</option>
+        <option>Level 2</option>
+        <option>Level 1</option>
+        <option>Level 0</option>
+      </select>
+      <button type="submit">Create Account</button>
+    </form>
+    <p id="signup-message" style="color: green;"></p>
+  </div>
+
+  <div id="student-dashboard" style="display:none;">
+    <h3>Welcome, student!</h3>
+    <button onclick="showEditProfile()">Edit Profile</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div id="edit-profile" style="display:none;">
+    <h3>Edit Profile</h3>
+    <form id="profile-form">
+      <input type="text" id="first-name" placeholder="First Name" required />
+      <input type="text" id="last-name" placeholder="Last Name" required />
+      <select id="batch" required>
+        <option value="">Select Batch</option>
+        <option>Adults</option>
+        <option>Intermediate</option>
+        <option>Level 2</option>
+        <option>Level 1</option>
+        <option>Level 0</option>
+      </select>
+      <button type="submit">Save</button>
+    </form>
+    <p id="save-message" style="color: green;"></p>
+  </div>
 </section>
 
 <section id="admin-dashboard" style="display:none;">
-  <h2 id="admin-welcome-message">Welcome, Admin!</h2>
-  <div id="student-table-container"></div>
+  <h2>Welcome Admin!</h2>
+  <div>
+    <button onclick="showAdminTab('students')">Students</button>
+    <button onclick="showAdminTab('progress')">Student Progress</button>
+  </div>
+  <div id="admin-students" class="admin-tab">
+    <h3>Student List</h3>
+    <div id="student-table-container"></div>
+  </div>
+  <div id="admin-progress" class="admin-tab" style="display:none;">
+    <h3>Student Progress</h3>
+    <p>Coming soon...</p>
+  </div>
 </section>
 
-<section id="student-progress" style="display:none;">
-  <h2>Student Progress</h2>
+<section id="fee">
+  <h2>Fee Section</h2>
+  <p>Coming soon...</p>
 </section>
 
-<section id="fee" style="display:none;">
-  <h2>Fee Status</h2>
+<section id="student-progress">
+  <h2>Progress Section</h2>
+  <p>Coming soon...</p>
 </section>
 
-<!-- Login Form -->
-<section id="login-section" style="display:none;">
-  <h2>Login</h2>
-  <form id="login-form">
-    <label>Email: <input type="email" id="login-email" required /></label><br />
-    <label>Password: <input type="password" id="login-password" required /></label><br />
-    <button type="submit">Login</button>
-  </form>
-  <button id="google-login-btn">Login with Google</button>
-  <p><a href="#" onclick="showSection('signup-section')">Create an account</a></p>
-  <p><a href="#" onclick="showPasswordReset()">Forgot password?</a></p>
+<section id="communications">
+  <h2>Communications</h2>
+  <p>Coming soon...</p>
 </section>
 
-<!-- Signup Form -->
-<section id="signup-section" style="display:none;">
-  <h2>Create Account</h2>
-  <form id="signup-form">
-    <label>First Name: <input type="text" id="signup-firstName" required /></label><br />
-    <label>Last Name: <input type="text" id="signup-lastName" required /></label><br />
-    <label>Batch: <input type="text" id="signup-batch" required /></label><br />
-    <label>Email: <input type="email" id="signup-email" required /></label><br />
-    <label>Password: <input type="password" id="signup-password" required minlength="6" /></label><br />
-    <button type="submit">Create Account</button>
-  </form>
-  <button id="google-signup-btn">Sign up with Google</button>
-  <p><a href="#" onclick="showSection('login-section')">Already have an account? Login</a></p>
-</section>
-
-<!-- Password Reset Section -->
-<section id="password-reset-section" style="display:none;">
-  <h2>Reset Password</h2>
-  <form id="password-reset-form">
-    <label>Email: <input type="email" id="reset-email" required /></label><br />
-    <button type="submit">Send Reset Email</button>
-  </form>
-  <p><a href="#" onclick="showSection('login-section')">Back to Login</a></p>
-</section>
-
+<script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.4/firebase-firestore-compat.js"></script>
 <script src="app.js"></script>
+
 </body>
 </html>
