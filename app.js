@@ -15,6 +15,14 @@ const db = firebase.firestore();
 function showSection(id) {
   document.querySelectorAll("section").forEach(sec => sec.style.display = "none");
   document.getElementById(id).style.display = "block";
+
+  // Load student list only when admin opens Students tab
+  if (id === "admin-dashboard") {
+    const isAdmin = document.getElementById("admin-dashboard").style.display === "block";
+    if (isAdmin) {
+      loadStudentListFromSheet();
+    }
+  }
 }
 
 function showStudentOption(type) {
@@ -76,7 +84,11 @@ document.getElementById("login-form").addEventListener("submit", e => {
     });
 });
 
+let studentListLoaded = false;
+
 function loadStudentListFromSheet() {
+  if (studentListLoaded) return;
+  studentListLoaded = true;
   google.charts.load('current', { packages: ['table'] });
   google.charts.setOnLoadCallback(drawStudentList);
 
